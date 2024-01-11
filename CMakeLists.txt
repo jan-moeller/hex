@@ -58,6 +58,7 @@ message(STATUS "Build type:                ${CMAKE_BUILD_TYPE}")
 # Main target
 #############################################################################################################
 add_library(${PROJECT_NAME} INTERFACE
+        include/hex/coordinate_axis.hpp
         include/hex/hex.hpp
 )
 target_include_directories(${PROJECT_NAME}

@@ -22,8 +22,20 @@
 // SOFTWARE.
 //
 
-#ifndef HEX_HEX_HPP
-#define HEX_HEX_HPP
+#ifndef HEX_COORDINATE_AXIS_HPP
+#define HEX_COORDINATE_AXIS_HPP
 
-#include "hex/coordinate_axis.hpp"
-#endif // HEX_HEX_HPP
+#include <cstdint>
+
+namespace hex
+{
+// Designates the 3 hex grid coordinate axes, q, r and s.
+enum class coordinate_axis : std::uint8_t
+{
+    q, // The q coordinate axis.
+    r, // The r coordinate axis.
+    s, // The s coordinate axis.
+};
+} // namespace hex
+
+#endif // HEX_COORDINATE_AXIS_HPP
