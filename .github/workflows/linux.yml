@@ -1,0 +1,74 @@
+name: linux
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ ubuntu-22.04 ]
+        build_type: [ Debug, Release ]
+        c_compiler: [ gcc-13 ]
+        include:
+          - os: ubuntu-22.04
+            c_compiler: gcc-13
+            cpp_compiler: g++-13
+        exclude: [ ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install packages
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
+          sudo apt-get update
+          sudo apt-get install -y ninja-build g++-13
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+          echo "build-test-output-dir=${{ github.workspace }}/build_test" >> "$GITHUB_OUTPUT"
+          echo "install-output-dir=${{ github.workspace }}/install" >> "$GITHUB_OUTPUT"
+
+      # Configure and execute a regular build, with settings as if for release
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -GNinja
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+      - name: Install
+        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix ${{ steps.strings.outputs.install-output-dir }}
+
+      # Configure and execute a test build. This build potentially differs from the above, e.g. using -Werror or ASAN.
+      - name: Configure CMake for test
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-test-output-dir }}
+          -GNinja
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -S ${{ github.workspace }}/test
+
+      - name: Build tests
+        run: cmake --build ${{ steps.strings.outputs.build-test-output-dir }} --config ${{ matrix.build_type }}
+
+      - name: Test
+        working-directory: ${{ steps.strings.outputs.build-test-output-dir }}
+        run: ctest --build-config ${{ matrix.build_type }}
