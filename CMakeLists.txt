@@ -60,6 +60,7 @@ message(STATUS "Build type:                ${CMAKE_BUILD_TYPE}")
 add_library(${PROJECT_NAME} INTERFACE
         include/hex/coordinate_axis.hpp
         include/hex/detail/detail_narrowing.hpp
+        include/hex/detail/detail_parse_integer_literal.hpp
         include/hex/hex.hpp
 )
 target_include_directories(${PROJECT_NAME}
