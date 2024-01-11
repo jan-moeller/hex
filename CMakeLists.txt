@@ -64,6 +64,7 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/coordinate_axis.hpp
         include/hex/detail/detail_narrowing.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
+        include/hex/detail/detail_vector_iterator.hpp
         include/hex/hex.hpp
         include/hex/rotation_steps.hpp
 )
