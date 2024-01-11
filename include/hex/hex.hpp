@@ -27,4 +27,5 @@
 
 #include "hex/coordinate.hpp"
 #include "hex/coordinate_axis.hpp"
+#include "hex/rotation_steps.hpp"
 #endif // HEX_HEX_HPP

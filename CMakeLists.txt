@@ -65,6 +65,7 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/detail/detail_narrowing.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
         include/hex/hex.hpp
+        include/hex/rotation_steps.hpp
 )
 target_include_directories(${PROJECT_NAME}
         INTERFACE
