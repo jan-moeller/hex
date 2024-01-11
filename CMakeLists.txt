@@ -48,16 +48,19 @@ CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.11.1")
 #############################################################################################################
 # Build configuration
 #############################################################################################################
+option(HEX_BUILD_TESTS "Include test target in main build (prefer running a standalone test build from the test/ directory)" OFF)
 
 message(STATUS "------------------------------------------------------------------------------")
 message(STATUS "    ${PROJECT_NAME} (${PROJECT_VERSION})")
 message(STATUS "------------------------------------------------------------------------------")
 message(STATUS "Build type:                ${CMAKE_BUILD_TYPE}")
+message(STATUS "Build tests:               ${HEX_BUILD_TESTS}")
 
 #############################################################################################################
 # Main target
 #############################################################################################################
 add_library(${PROJECT_NAME} INTERFACE
+        include/hex/coordinate.hpp
         include/hex/coordinate_axis.hpp
         include/hex/detail/detail_narrowing.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
@@ -90,3 +93,7 @@ packageProject(
         COMPATIBILITY SameMajorVersion
         DEPENDENCIES ""
 )
+
+if (${HEX_BUILD_TESTS})
+    add_subdirectory(test)
+endif ()

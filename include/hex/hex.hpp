@@ -25,5 +25,6 @@
 #ifndef HEX_HEX_HPP
 #define HEX_HEX_HPP
 
+#include "hex/coordinate.hpp"
 #include "hex/coordinate_axis.hpp"
 #endif // HEX_HEX_HPP
