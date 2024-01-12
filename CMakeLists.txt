@@ -62,6 +62,7 @@ message(STATUS "Build tests:               ${HEX_BUILD_TESTS}")
 add_library(${PROJECT_NAME} INTERFACE
         include/hex/coordinate.hpp
         include/hex/coordinate_axis.hpp
+        include/hex/detail/detail_arithmetic.hpp
         include/hex/detail/detail_narrowing.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
         include/hex/detail/detail_vector_iterator.hpp
