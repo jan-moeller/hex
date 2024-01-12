@@ -30,9 +30,11 @@
 #include "hex/detail/detail_narrowing.hpp"
 #include "hex/detail/detail_parse_integer_literal.hpp"
 
+#include <limits>
+
 namespace hex
 {
-// A hex grid coordinate along one of the 3 major axes.
+// A hex grid coordinate along one of the 3 major axes. Coordinates must not exceed the range [min_value, max_value].
 template<coordinate_axis Axis, detail::arithmetic T = int>
 class coordinate
 {
@@ -40,7 +42,9 @@ class coordinate
     T m_value = 0;
 
   public:
-    static constexpr auto axis = Axis; // The axis of this coordinate.
+    static constexpr auto axis      = Axis;                              // The axis of this coordinate.
+    static constexpr auto max_value = std::numeric_limits<T>::max() / 2; // The greatest valid coordinate value
+    static constexpr auto min_value = -max_value;                        // The lowest valid coordinate value
 
     // Constructs the 0 coordinate.
     constexpr coordinate() = default;
