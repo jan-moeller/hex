@@ -27,6 +27,7 @@
 
 #include "hex/coordinate.hpp"
 #include "hex/coordinate_axis.hpp"
+#include "hex/detail/detail_arithmetic.hpp"
 #include "hex/detail/detail_narrowing.hpp"
 #include "hex/detail/detail_vector_iterator.hpp"
 #include "hex/rotation_steps.hpp"
@@ -53,8 +54,7 @@ namespace hex
 //
 // Vectors are random-access ranges of (axis, value) pairs. They also provide a map-like interface to access value by
 // axis.
-template<typename T = int>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T = int>
 class vector
 {
   public:
@@ -91,8 +91,8 @@ class vector
 
     // Constructs a vector from another vector of a different underlying type.
     // This operation is implicit if it is non-narrowing. Otherwise, an explicit cast is required.
-    template<typename U>
-        requires((std::signed_integral<U> || std::floating_point<U>) && !std::same_as<T, U>)
+    template<detail::arithmetic U>
+        requires(!std::same_as<T, U>)
     constexpr explicit(detail::narrowing<U, T>) vector(vector<U> vec); // NOLINT(google-explicit-constructor)
 
     [[nodiscard]] constexpr auto operator==(vector const& rhs) const noexcept -> bool = default;
@@ -181,14 +181,12 @@ template<typename Lhs, typename Rhs>
 [[nodiscard]] constexpr auto operator/(vector<Lhs> const& lhs, Rhs const& rhs) -> vector<decltype(Lhs{} / Rhs{})>;
 
 // Cast to a vector of different underlying type.
-template<typename T, typename U>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T, typename U>
 [[nodiscard]] constexpr auto coordinate_cast(vector<U> const& vec) -> vector<T>;
 
 // Computes the hex grid distance between two coordinate vectors.
-template<typename T = int, typename U = int>
-    requires(std::signed_integral<T> || std::floating_point<T>)
-            && (std::signed_integral<T> == std::signed_integral<U> && std::floating_point<T> == std::floating_point<U>)
+template<detail::arithmetic T = int, detail::arithmetic U = int>
+    requires(std::signed_integral<T> == std::signed_integral<U> && std::floating_point<T> == std::floating_point<U>)
 [[nodiscard]] constexpr auto distance(vector<T> const& from, vector<U> const& to) -> std::common_type_t<T, U>;
 
 // Returns true if the two hex coordinates designate adjacent tiles, otherwise false.
@@ -196,8 +194,7 @@ template<std::signed_integral T = int>
 [[nodiscard]] constexpr auto adjacent(vector<T> const& from, vector<T> const& to) -> bool;
 
 // Rounds a fractional vector to the closest integral vector.
-template<std::integral T = int, typename U>
-    requires(std::signed_integral<U> || std::floating_point<U>)
+template<std::integral T = int, detail::arithmetic U>
 [[nodiscard]] constexpr auto round(vector<U> const& vec) -> vector<T>;
 
 // Linear interpolates between two fractional hex grid vectors.
@@ -205,13 +202,11 @@ template<std::floating_point T>
 [[nodiscard]] constexpr auto lerp(vector<T> const& a, vector<T> const& b, T t) -> vector<T>;
 
 // Rotates a vector in 60° steps either clockwise (rotations > 0) or counter-clockwise (rotations < 0).
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 [[nodiscard]] constexpr auto rotate(vector<T> vec, rotation_steps steps) -> vector<T>;
 
 // Reflects the vector across an axis.
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 [[nodiscard]] constexpr auto reflect(vector<T> vec, coordinate_axis axis) -> vector<T>;
 
 // ------------------------------ implementation below ------------------------------
@@ -241,29 +236,25 @@ constexpr auto operator/(vector<Lhs> const& lhs, Rhs const& rhs) -> vector<declt
 {
     return vector<decltype(Lhs{} / Rhs{})>{lhs.q() / rhs, lhs.r() / rhs};
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr vector<T>::vector(q_coordinate q, r_coordinate r)
     : m_q(q)
     , m_r(r)
 {
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr vector<T>::vector(q_coordinate q, s_coordinate s)
     : m_q(q)
     , m_r(r_coordinate(-s.value() - q.value()))
 {
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr vector<T>::vector(r_coordinate r, s_coordinate s)
     : m_q(q_coordinate(-r.value() - s.value()))
     , m_r(r)
 {
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr vector<T>::vector(q_coordinate q, r_coordinate r, s_coordinate s)
     : m_q(q)
     , m_r(r)
@@ -271,37 +262,32 @@ constexpr vector<T>::vector(q_coordinate q, r_coordinate r, s_coordinate s)
     if ((q.value() + r.value() + s.value()) != 0)
         throw std::invalid_argument{"hex grid coordinates sum must be 0"};
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
-template<typename U>
-    requires((std::signed_integral<U> || std::floating_point<U>) && !std::same_as<T, U>)
+template<detail::arithmetic T>
+template<detail::arithmetic U>
+    requires(!std::same_as<T, U>)
 constexpr vector<T>::vector(vector<U> vec) // NOLINT(google-explicit-constructor)
     : vector(q_coordinate(vec.q()), r_coordinate(vec.r()))
 {
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr void vector<T>::set(q_coordinate q, r_coordinate r)
 {
     m_q = q;
     m_r = r;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr void vector<T>::set(q_coordinate q, s_coordinate s)
 {
     m_q = q;
     m_r = r_coordinate(-s.value() - q.value());
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr void vector<T>::set(r_coordinate r, s_coordinate s)
 {
     m_q = q_coordinate(-r.value() - s.value());
     m_r = r;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr void vector<T>::set(q_coordinate q, r_coordinate r, s_coordinate s)
 {
     if ((q.value() + r.value() + s.value()) != 0)
@@ -310,170 +296,144 @@ constexpr void vector<T>::set(q_coordinate q, r_coordinate r, s_coordinate s)
     m_r = r;
 }
 
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::q() const noexcept -> q_coordinate
 {
     return m_q;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::r() const noexcept -> r_coordinate
 {
     return m_r;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::s() const noexcept -> s_coordinate
 {
     return s_coordinate(-m_q.value() - m_r.value());
 }
 
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator[](size_type const& i) const -> value_type
 {
     return begin()[i];
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator[](key_type const& key) const -> mapped_type
 {
     return (*this)[std::to_underlying(key)].second;
 }
 
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::begin() noexcept -> iterator
 {
     return iterator(this, 0);
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, 0);
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::cbegin() const noexcept -> const_iterator
 {
     return const_iterator(this, 0);
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::end() noexcept -> iterator
 {
     return iterator(this, 3);
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::end() const noexcept -> const_iterator
 {
     return const_iterator(this, 3);
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::cend() const noexcept -> const_iterator
 {
     return const_iterator(this, 3);
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::rbegin() noexcept -> reverse_iterator
 {
     return reverse_iterator(end());
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::rbegin() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(end());
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::crbegin() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(end());
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::rend() noexcept -> reverse_iterator
 {
     return reverse_iterator(begin());
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::rend() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(begin());
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::crend() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(begin());
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::size() const noexcept -> vector::size_type
 {
     return 3;
 }
 
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator+() const -> vector<decltype(+T{})>
 {
     return *this;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator-() const -> vector<decltype(-T{})>
 {
     return {-m_q, -m_r};
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator+=(vector const& rhs) -> vector&
 {
     m_q += rhs.m_q;
     m_r += rhs.m_r;
     return *this;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator-=(vector const& rhs) -> vector&
 {
     m_q -= rhs.m_q;
     m_r -= rhs.m_r;
     return *this;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator*=(T const& rhs) -> vector&
 {
     m_q *= rhs;
     m_r *= rhs;
     return *this;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::operator/=(T const& rhs) -> vector&
 {
     m_q /= rhs;
     m_r /= rhs;
     return *this;
 }
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 constexpr auto vector<T>::norm() const noexcept -> T
 {
     return std::max(std::max(std::abs(q().value()), std::abs(r().value())), std::abs(s().value()));
 }
 
-template<typename T, typename U>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T, detail::arithmetic U>
 constexpr auto coordinate_cast(vector<U> const& vec) -> vector<T>
 {
     using q_coord = vector<T>::q_coordinate;
@@ -481,9 +441,8 @@ constexpr auto coordinate_cast(vector<U> const& vec) -> vector<T>
     return vector<T>(q_coord{static_cast<T>(vec.q().value())}, r_coord{static_cast<T>(vec.r().value())});
 }
 
-template<typename T, typename U>
-    requires(std::signed_integral<T> || std::floating_point<T>)
-            && (std::signed_integral<T> == std::signed_integral<U> && std::floating_point<T> == std::floating_point<U>)
+template<detail::arithmetic T, detail::arithmetic U>
+    requires(std::signed_integral<T> == std::signed_integral<U> && std::floating_point<T> == std::floating_point<U>)
 constexpr auto distance(vector<T> const& from, vector<U> const& to) -> std::common_type_t<T, U>
 {
     return (to - from).norm();
@@ -495,8 +454,7 @@ constexpr auto adjacent(vector<T> const& from, vector<T> const& to) -> bool
     return distance(from, to) == 1;
 }
 
-template<std::integral T, typename U>
-    requires(std::signed_integral<U> || std::floating_point<U>)
+template<std::integral T, detail::arithmetic U>
 constexpr auto round(vector<U> const& vec) -> vector<T>
 {
     if constexpr (std::integral<U>)
@@ -532,8 +490,7 @@ constexpr auto lerp(vector<T> const& a, vector<T> const& b, T t) -> vector<T>
                      r_coord{std::lerp(a.r().value(), b.r().value(), t)}};
 }
 
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 [[nodiscard]] constexpr auto rotate(vector<T> vec, rotation_steps steps) -> vector<T>
 {
     using q_coord = vector<T>::q_coordinate;
@@ -563,8 +520,7 @@ template<typename T>
     return vec;
 }
 
-template<typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T>
 [[nodiscard]] constexpr auto reflect(vector<T> vec, coordinate_axis axis) -> vector<T>
 {
     using q_coord = vector<T>::q_coordinate;

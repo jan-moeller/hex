@@ -26,16 +26,14 @@
 #define HEX_COORDINATE_HPP
 
 #include "hex/coordinate_axis.hpp"
+#include "hex/detail/detail_arithmetic.hpp"
 #include "hex/detail/detail_narrowing.hpp"
 #include "hex/detail/detail_parse_integer_literal.hpp"
-
-#include <concepts>
 
 namespace hex
 {
 // A hex grid coordinate along one of the 3 major axes.
-template<coordinate_axis Axis, typename T = int>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T = int>
 class coordinate
 {
   private:
@@ -52,9 +50,8 @@ class coordinate
 
     // Constructs a coordinate from another coordinate along the same axis, but of a different underlying type.
     // This operation is implicit if it is non-narrowing. Otherwise, an explicit cast is required.
-    template<typename U>
-        requires((std::signed_integral<U> || std::floating_point<U>) && !std::same_as<T, U>)
-    constexpr explicit(detail::narrowing<U, T>)    //
+    template<detail::arithmetic U>
+    constexpr explicit(detail::narrowing<U, T>)
         coordinate(coordinate<Axis, U> coordinate) // NOLINT(google-explicit-constructor)
         noexcept(detail::nonnarrowing<U, T>);
 
@@ -67,8 +64,7 @@ class coordinate
     [[nodiscard]] constexpr auto value() noexcept -> T&;
 
     // Converts to integral or floating point type.
-    template<typename U>
-        requires(std::signed_integral<U> || std::floating_point<U>)
+    template<detail::arithmetic U>
     [[nodiscard]] constexpr explicit operator U() const noexcept;
 
     // Compares the underlying values.
@@ -125,8 +121,7 @@ template<coordinate_axis Axis, typename Lhs, typename Rhs>
     requires requires { Lhs{} % Rhs{}; };
 
 // Cast the coordinate to the given underlying type T.
-template<typename T, coordinate_axis Axis, typename U>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T, coordinate_axis Axis, typename U>
 [[nodiscard]] constexpr auto coordinate_cast(coordinate<Axis, U> const& coord) -> coordinate<Axis, T>;
 
 template<typename T = int>
@@ -156,55 +151,45 @@ template<char... Digits>
 
 // ------------------------------ implementation below ------------------------------
 
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr coordinate<Axis, T>::coordinate(T value) noexcept
     : m_value(value)
 {
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
-template<typename U>
-    requires((std::signed_integral<U> || std::floating_point<U>) && !std::same_as<T, U>)
+template<coordinate_axis Axis, detail::arithmetic T>
+template<detail::arithmetic U>
 constexpr coordinate<Axis, T>::coordinate(coordinate<Axis, U> coordinate) noexcept(detail::nonnarrowing<U, T>)
     : m_value(coordinate.value())
 {
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 template<coordinate_axis OtherAxis>
 constexpr coordinate<Axis, T>::coordinate(coordinate<OtherAxis, T> coordinate) noexcept
     : m_value(coordinate.value())
 {
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::value() const noexcept -> T const&
 {
     return m_value;
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::value() noexcept -> T&
 {
     return m_value;
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
-template<typename U>
-    requires(std::signed_integral<U> || std::floating_point<U>)
+template<coordinate_axis Axis, detail::arithmetic T>
+template<detail::arithmetic U>
 constexpr coordinate<Axis, T>::operator U() const noexcept
 {
     return U(m_value);
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::operator+() const -> coordinate<Axis, decltype(+m_value)>
 {
     return coordinate<Axis, decltype(+m_value)>{+m_value};
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::operator-() const -> coordinate<Axis, decltype(-m_value)>
 {
     return coordinate<Axis, decltype(-m_value)>{-m_value};
@@ -242,36 +227,31 @@ constexpr auto operator%(coordinate<Axis, Lhs> const& lhs, Rhs const& rhs) -> co
 {
     return coordinate<Axis, decltype(Lhs{} % Rhs{})>{lhs.value() % rhs};
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::operator+=(coordinate const& rhs) -> coordinate&
 {
     m_value += rhs.m_value;
     return *this;
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::operator-=(coordinate const& rhs) -> coordinate&
 {
     m_value -= rhs.m_value;
     return *this;
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::operator*=(T const& rhs) -> coordinate&
 {
     m_value *= rhs;
     return *this;
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::operator/=(T const& rhs) -> coordinate&
 {
     m_value /= rhs;
     return *this;
 }
-template<coordinate_axis Axis, typename T>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<coordinate_axis Axis, detail::arithmetic T>
 constexpr auto coordinate<Axis, T>::operator%=(T const& rhs) -> coordinate&
     requires requires { m_value %= rhs; }
 {
@@ -279,8 +259,7 @@ constexpr auto coordinate<Axis, T>::operator%=(T const& rhs) -> coordinate&
     return *this;
 }
 
-template<typename T, coordinate_axis Axis, typename U>
-    requires(std::signed_integral<T> || std::floating_point<T>)
+template<detail::arithmetic T, coordinate_axis Axis, typename U>
 constexpr auto coordinate_cast(coordinate<Axis, U> const& coord) -> coordinate<Axis, T>
 {
     return coordinate<Axis, T>(static_cast<T>(coord.value()));
