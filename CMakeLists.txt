@@ -63,6 +63,7 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/coordinate.hpp
         include/hex/coordinate_axis.hpp
         include/hex/detail/detail_arithmetic.hpp
+        include/hex/detail/detail_isosceles_trapezoid_size.hpp
         include/hex/detail/detail_narrowing.hpp
         include/hex/detail/detail_neighbors.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
