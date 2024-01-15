@@ -60,6 +60,7 @@ endif ()
 #############################################################################################################
 
 add_executable(${PROJECT_NAME}
+        detail/test_sqrt.cpp
         test_coordinate.cpp
         test_neighbors_view.cpp
         test_vector.cpp

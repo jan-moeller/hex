@@ -66,6 +66,7 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/detail/detail_narrowing.hpp
         include/hex/detail/detail_neighbors.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
+        include/hex/detail/detail_sqrt.hpp
         include/hex/detail/detail_vector_iterator.hpp
         include/hex/hex.hpp
         include/hex/neighbors_view.hpp
