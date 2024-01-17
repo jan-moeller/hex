@@ -28,30 +28,52 @@
 #include "detail_sqrt.hpp"
 
 #include <algorithm>
+#include <limits>
 
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
 
 namespace hex::detail
 {
-template<typename T>
-constexpr auto isosceles_trapezoid_size_from_base_and_height(T base, T height) -> std::size_t
+// These are the maximum limits the below implementation can support without overflow.
+inline constexpr std::size_t isosceles_trapezoid_max_base   = std::numeric_limits<std::int32_t>::max();
+inline constexpr std::size_t isosceles_trapezoid_max_height = isosceles_trapezoid_max_base;
+inline constexpr std::size_t isosceles_trapezoid_max_size   = 2'305'843'008'139'952'128UZ;
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+constexpr auto isosceles_trapezoid_size_from_base_and_height(std::size_t base, std::size_t height) -> std::size_t
 {
     assert(height <= base);
-    assert(base >= 0);
 
-    std::size_t b = base;
-    std::size_t h = height;
+    std::size_t const b = base;
+    std::size_t const h = height;
 
-    // h * (b - h/2) + h/2
-    auto const h_half = h / 2;
-    return h * (b - h_half) + h_half * (h % 2 == 0);
+    // s = h * (b - h/2) + h/2
+    auto const h_half = h / 2UZ;
+    return h * (b - h_half) + h_half * (h % 2UZ == 0UZ); // NOLINT(readability-implicit-bool-conversion)
 }
 
-template<typename T>
-constexpr auto isosceles_trapezoid_size_from_top_and_height(T top, T height) -> std::size_t
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+constexpr auto isosceles_trapezoid_size_from_top_and_height(std::size_t top, std::size_t height) -> std::size_t
 {
-    return isosceles_trapezoid_size_from_base_and_height(std::max(T{0}, top + height - 1), height);
+    return isosceles_trapezoid_size_from_base_and_height(std::max(0UZ, top + height - 1UZ), height);
+}
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+constexpr auto isosceles_trapezoid_height_from_base_and_size(std::size_t base, std::size_t size) -> std::size_t
+{
+    // h = b - sqrt((4 * b + 4) * b - 8 * s + 1) / 2 + 1/2
+    std::size_t const k = floor_sqrt((4UZ * base + 4UZ) * base + 1UZ - 8 * size);
+    return base - k / 2UZ + (k % 2UZ == 0UZ); // NOLINT(readability-implicit-bool-conversion)
+}
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+constexpr auto isosceles_trapezoid_height_from_top_and_size(std::size_t top, std::size_t size) -> std::size_t
+{
+    // 1/2 (sqrt(8 * s + (1 - 2 * t) * (1 - 2 * t)) - 2 * t + 1)
+    std::size_t const k = ceil_sqrt(8UZ * size + top * (4UZ * top - 4UZ) + 1UZ) - 2UZ * top + 1UZ;
+    return k / 2UZ + (k % 2UZ != 0UZ); // NOLINT(readability-implicit-bool-conversion)
 }
 } // namespace hex::detail
 

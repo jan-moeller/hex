@@ -27,8 +27,6 @@
 
 #include <limits>
 
-#include <cstdint>
-
 using namespace hex::detail;
 template<typename T>
 using nl = std::numeric_limits<T>;
@@ -45,19 +43,12 @@ TEST_CASE("isosceles_trapezoid_size_from_base_and_height", "[detail]")
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(2, 2) == 3);
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(3, 2) == 5);
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(3, 3) == 6);
-
-    // Some random larger values that result in max size
+    STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(20, 15) == 195);
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(98'303, 65'537) == max<std::uint32_t>);
-    STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(6'153'794'198L, 5'166'021'507L) == max<std::uint64_t>);
-
-    // Maximum height possible with 32-bit / 64-bit integers
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(92'681, 92'681) == 4'294'930'221);
-    STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(6'074'000'999, 6'074'000'999)
-                 == 18'446'744'070'963'499'500UZ);
-
-    // Maximum size and base possible with 32-bit / 64-bit integers
-    STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(max<std::uint32_t>, 1U) == max<std::uint32_t>);
-    STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(max<std::uint64_t>, 1UL) == max<std::uint64_t>);
+    STATIC_CHECK(
+        isosceles_trapezoid_size_from_base_and_height(isosceles_trapezoid_max_base, isosceles_trapezoid_max_height)
+        == isosceles_trapezoid_max_size);
 }
 
 TEST_CASE("isosceles_trapezoid_size_from_top_and_height", "[detail]")
@@ -72,16 +63,57 @@ TEST_CASE("isosceles_trapezoid_size_from_top_and_height", "[detail]")
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(2, 2) == 5);
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(3, 2) == 7);
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(3, 3) == 12);
-
-    // Some random larger values that result in max size
-    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(32767, 65'537) == max<std::uint32_t>);
-    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(987'772'692L, 5'166'021'507L) == max<std::uint64_t>);
-
-    // Maximum height possible with 32-bit / 64-bit integers
+    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(6, 15) == 195);
+    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(32'767, 65'537) == max<std::uint32_t>);
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(1, 92'681) == 4'294'930'221);
-    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(1L, 6'074'000'999L) == 18'446'744'070'963'499'500UZ);
+    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(1L, isosceles_trapezoid_max_height)
+                 == isosceles_trapezoid_max_size);
+}
 
-    // Maximum size and top possible with 32-bit / 64-bit integers
-    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(max<std::uint32_t>, 1U) == max<std::uint32_t>);
-    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(max<std::uint64_t>, 1UL) == max<std::uint64_t>);
+TEST_CASE("isosceles_trapezoid_height_from_base_and_size", "[detail]")
+{
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(0, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(1, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(1, 1) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(2, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(2, 1) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(2, 2) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(2, 3) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(3, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(3, 1) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(3, 2) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(3, 3) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(3, 4) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(3, 5) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(3, 6) == 3);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(20, 195) == 15);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(98'303, max<std::uint32_t>) == 65'537);
+    STATIC_CHECK(isosceles_trapezoid_height_from_base_and_size(92'681, 4'294'930'221) == 92'681);
+    STATIC_CHECK(
+        isosceles_trapezoid_height_from_base_and_size(isosceles_trapezoid_max_base, isosceles_trapezoid_max_size)
+        == isosceles_trapezoid_max_height);
+}
+
+TEST_CASE("isosceles_trapezoid_height_from_top_and_size", "[detail]")
+{
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(1, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(1, 1) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(2, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(2, 1) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(2, 2) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(2, 3) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 1) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 2) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 3) == 1);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 4) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 5) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 6) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 7) == 2);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(3, 12) == 3);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(6, 195) == 15);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(32'767, max<std::uint32_t>) == 65'537);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(1, 4'294'930'221) == 92'681);
+    STATIC_CHECK(isosceles_trapezoid_height_from_top_and_size(1L, isosceles_trapezoid_max_size)
+                 == isosceles_trapezoid_max_height);
 }
