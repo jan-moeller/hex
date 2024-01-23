@@ -82,3 +82,100 @@ TEST_CASE("hexagon_size", "[detail]")
         STATIC_CHECK(hexagon_size(0, 0, -radius * 3LL, 2LL * radius, 2LL * radius, -radius) == size);
     }
 }
+
+TEST_CASE("qr_to_index", "[detail]")
+{
+    SECTION("single element")
+    {
+        STATIC_CHECK(0 == qr_to_index(0, 0, 0, 0, 0, 0, 0));
+        STATIC_CHECK(0 == qr_to_index(1, 1, 1, 1, -2, 1, -2));
+        STATIC_CHECK(0 == qr_to_index(1, -2, 1, -2, 1, -2, 1));
+        STATIC_CHECK(0 == qr_to_index(-2, 1, -2, 1, 1, 1, 1));
+    }
+    SECTION("triangle")
+    {
+        STATIC_CHECK(0 == qr_to_index(-1, -1, -1, -1, -1, 2, 2));
+        STATIC_CHECK(1 == qr_to_index(-1, 0, -1, -1, -1, 2, 2));
+        STATIC_CHECK(2 == qr_to_index(-1, 1, -1, -1, -1, 2, 2));
+        STATIC_CHECK(3 == qr_to_index(-1, 2, -1, -1, -1, 2, 2));
+        STATIC_CHECK(4 == qr_to_index(0, -1, -1, -1, -1, 2, 2));
+        STATIC_CHECK(5 == qr_to_index(0, 0, -1, -1, -1, 2, 2));
+        STATIC_CHECK(6 == qr_to_index(0, 1, -1, -1, -1, 2, 2));
+        STATIC_CHECK(7 == qr_to_index(1, -1, -1, -1, -1, 2, 2));
+        STATIC_CHECK(8 == qr_to_index(1, 0, -1, -1, -1, 2, 2));
+        STATIC_CHECK(9 == qr_to_index(2, -1, -1, -1, -1, 2, 2));
+
+        STATIC_CHECK(0 == qr_to_index(-2, 1, -2, -2, -2, 1, 1));
+        STATIC_CHECK(1 == qr_to_index(-1, 0, -2, -2, -2, 1, 1));
+        STATIC_CHECK(2 == qr_to_index(-1, 1, -2, -2, -2, 1, 1));
+        STATIC_CHECK(3 == qr_to_index(0, -1, -2, -2, -2, 1, 1));
+        STATIC_CHECK(4 == qr_to_index(0, 0, -2, -2, -2, 1, 1));
+        STATIC_CHECK(5 == qr_to_index(0, 1, -2, -2, -2, 1, 1));
+        STATIC_CHECK(6 == qr_to_index(1, -2, -2, -2, -2, 1, 1));
+        STATIC_CHECK(7 == qr_to_index(1, -1, -2, -2, -2, 1, 1));
+        STATIC_CHECK(8 == qr_to_index(1, 0, -2, -2, -2, 1, 1));
+        STATIC_CHECK(9 == qr_to_index(1, 1, -2, -2, -2, 1, 1));
+    }
+    SECTION("isosceles trapezoid")
+    {
+        STATIC_CHECK(0 == qr_to_index(-1, 0, -1, 0, -1, 1, 1));
+        STATIC_CHECK(1 == qr_to_index(-1, 1, -1, 0, -1, 1, 1));
+        STATIC_CHECK(2 == qr_to_index(0, 0, -1, 0, -1, 1, 1));
+        STATIC_CHECK(3 == qr_to_index(0, 1, -1, 0, -1, 1, 1));
+        STATIC_CHECK(4 == qr_to_index(1, 0, -1, 0, -1, 1, 1));
+    }
+    SECTION("parallelogram")
+    {
+        STATIC_CHECK(0 == qr_to_index(-1, 0, -1, -1, 0, 1, 1));
+        STATIC_CHECK(1 == qr_to_index(-1, 1, -1, -1, 0, 1, 1));
+        STATIC_CHECK(2 == qr_to_index(0, -1, -1, -1, 0, 1, 1));
+        STATIC_CHECK(3 == qr_to_index(0, 0, -1, -1, 0, 1, 1));
+
+        STATIC_CHECK(0 == qr_to_index(-1, -1, -1, -1, -1, 0, 2));
+        STATIC_CHECK(1 == qr_to_index(-1, 0, -1, -1, -1, 0, 2));
+        STATIC_CHECK(2 == qr_to_index(0, -1, -1, -1, -1, 0, 2));
+        STATIC_CHECK(3 == qr_to_index(0, 0, -1, -1, -1, 0, 2));
+        STATIC_CHECK(4 == qr_to_index(1, -1, -1, -1, -1, 0, 2));
+        STATIC_CHECK(5 == qr_to_index(1, 0, -1, -1, -1, 0, 2));
+
+        STATIC_CHECK(0 == qr_to_index(-1, 0, -1, -2, 0, 1, 1));
+        STATIC_CHECK(1 == qr_to_index(-1, 1, -1, -2, 0, 1, 1));
+        STATIC_CHECK(2 == qr_to_index(0, -1, -1, -2, 0, 1, 1));
+        STATIC_CHECK(3 == qr_to_index(0, 0, -1, -2, 0, 1, 1));
+        STATIC_CHECK(4 == qr_to_index(1, -2, -1, -2, 0, 1, 1));
+        STATIC_CHECK(5 == qr_to_index(1, -1, -1, -2, 0, 1, 1));
+    }
+    SECTION("pentagon")
+    {
+        STATIC_CHECK(0 == qr_to_index(-1, 0, -1, -2, -1, 1, 1));
+        STATIC_CHECK(1 == qr_to_index(-1, 1, -1, -2, -1, 1, 1));
+        STATIC_CHECK(2 == qr_to_index(0, -1, -1, -2, -1, 1, 1));
+        STATIC_CHECK(3 == qr_to_index(0, 0, -1, -2, -1, 1, 1));
+        STATIC_CHECK(4 == qr_to_index(0, 1, -1, -2, -1, 1, 1));
+        STATIC_CHECK(5 == qr_to_index(1, -2, -1, -2, -1, 1, 1));
+        STATIC_CHECK(6 == qr_to_index(1, -1, -1, -2, -1, 1, 1));
+        STATIC_CHECK(7 == qr_to_index(1, 0, -1, -2, -1, 1, 1));
+    }
+    SECTION("hexagon")
+    {
+        STATIC_CHECK(0 == qr_to_index(-1, 0, -1, -1, -1, 1, 1));
+        STATIC_CHECK(1 == qr_to_index(-1, 1, -1, -1, -1, 1, 1));
+        STATIC_CHECK(2 == qr_to_index(0, -1, -1, -1, -1, 1, 1));
+        STATIC_CHECK(3 == qr_to_index(0, 0, -1, -1, -1, 1, 1));
+        STATIC_CHECK(4 == qr_to_index(0, 1, -1, -1, -1, 1, 1));
+        STATIC_CHECK(5 == qr_to_index(1, -1, -1, -1, -1, 1, 1));
+        STATIC_CHECK(6 == qr_to_index(1, 0, -1, -1, -1, 1, 1));
+    }
+    SECTION("max size")
+    {
+        static constexpr std::int32_t radius = isosceles_trapezoid_max_base / 2;
+        static constexpr auto         size   = regular_hexagon_size(radius);
+        STATIC_CHECK(0 == qr_to_index(-radius, 0, -radius, -radius, -radius, radius, radius));
+        STATIC_CHECK(1 == qr_to_index(-radius, 1, -radius, -radius, -radius, radius, radius));
+        STATIC_CHECK(size - 1 == qr_to_index(radius, 0, -radius, -radius, -radius, radius, radius));
+
+        STATIC_CHECK(0 == qr_to_index(0, radius, 0, 0, -radius * 3LL, 2LL * radius, -radius));
+        STATIC_CHECK(1 == qr_to_index(0, radius + 1, 0, 0, -radius * 3LL, 2LL * radius, -radius));
+        STATIC_CHECK(size - 1 == qr_to_index(2 * radius, radius, 0, 0, -radius * 3LL, 2LL * radius, -radius));
+    }
+}

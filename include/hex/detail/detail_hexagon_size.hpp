@@ -25,9 +25,11 @@
 #ifndef HEX_DETAIL_HEXAGON_SIZE_HPP
 #define HEX_DETAIL_HEXAGON_SIZE_HPP
 
+#include "hex/detail/detail_hexagon_bounds.hpp"
 #include "hex/detail/detail_isosceles_trapezoid_size.hpp"
 
 #include <algorithm>
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 
@@ -69,6 +71,33 @@ constexpr auto hexagon_size(std::int64_t q_min, // NOLINT(bugprone-easily-swappa
     std::size_t const middle_size = middle_height * left_base;
 
     return left_size + middle_size + right_size;
+}
+
+constexpr auto qr_to_index(std::int64_t q,     // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t r,     // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t q_min, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t r_min, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t s_min, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t r_max, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t s_max  // NOLINT(bugprone-easily-swappable-parameters)
+                           ) -> std::size_t
+{
+    assert(q >= q_min);
+    assert(r >= r_min && r <= r_max);
+
+    std::int64_t left_q_min = q_min;
+    std::int64_t left_r_min = r_min;
+    std::int64_t left_s_min = s_min;
+    std::int64_t left_q_max = q - 1;
+    std::int64_t left_r_max = r_max;
+    std::int64_t left_s_max = s_max;
+
+    bool const valid = left_q_max >= q_min
+                       && tighten_bounds(left_q_min, left_r_min, left_s_min, left_q_max, left_r_max, left_s_max);
+    auto const b = valid ? hexagon_size(left_q_min, left_r_min, left_s_min, left_q_max, left_r_max, left_s_max) : 0UZ;
+    std::int64_t const r_min2 = std::max(r_min, -s_max - q);
+    std::int64_t const c      = r - r_min2;
+    return b + c;
 }
 } // namespace hex::detail
 
