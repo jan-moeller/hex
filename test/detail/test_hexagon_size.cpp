@@ -26,6 +26,8 @@
 
 #include <catch2/catch_all.hpp>
 
+#include <array>
+
 #include <cstdint>
 
 using namespace hex::detail;
@@ -177,5 +179,103 @@ TEST_CASE("qr_to_index", "[detail]")
         STATIC_CHECK(0 == qr_to_index(0, radius, 0, 0, -radius * 3LL, 2LL * radius, -radius));
         STATIC_CHECK(1 == qr_to_index(0, radius + 1, 0, 0, -radius * 3LL, 2LL * radius, -radius));
         STATIC_CHECK(size - 1 == qr_to_index(2 * radius, radius, 0, 0, -radius * 3LL, 2LL * radius, -radius));
+    }
+}
+
+TEST_CASE("index_to_qr", "[detail]")
+{
+    using qr = std::array<std::int64_t, 2>;
+    SECTION("single element")
+    {
+        STATIC_CHECK(qr{0, 0} == index_to_qr(0UZ, 0, 0, 0, 0, 0));
+        STATIC_CHECK(qr{1, 1} == index_to_qr(0UZ, 1, 1, -2, 1, -2));
+        STATIC_CHECK(qr{1, -2} == index_to_qr(0UZ, 1, -2, 1, -2, 1));
+        STATIC_CHECK(qr{-2, 1} == index_to_qr(0UZ, -2, 1, 1, 1, 1));
+    }
+    SECTION("triangle")
+    {
+        STATIC_CHECK(qr{-1, -1} == index_to_qr(0UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(1UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{-1, 1} == index_to_qr(2UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{-1, 2} == index_to_qr(3UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{0, -1} == index_to_qr(4UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(5UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{0, 1} == index_to_qr(6UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{1, -1} == index_to_qr(7UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{1, 0} == index_to_qr(8UZ, -1, -1, -1, 2, 2));
+        STATIC_CHECK(qr{2, -1} == index_to_qr(9UZ, -1, -1, -1, 2, 2));
+
+        STATIC_CHECK(qr{-2, 1} == index_to_qr(0UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(1UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{-1, 1} == index_to_qr(2UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{0, -1} == index_to_qr(3UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(4UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{0, 1} == index_to_qr(5UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{1, -2} == index_to_qr(6UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{1, -1} == index_to_qr(7UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{1, 0} == index_to_qr(8UZ, -2, -2, -2, 1, 1));
+        STATIC_CHECK(qr{1, 1} == index_to_qr(9UZ, -2, -2, -2, 1, 1));
+    }
+    SECTION("isosceles trapezoid")
+    {
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(0UZ, -1, 0, -1, 1, 1));
+        STATIC_CHECK(qr{-1, 1} == index_to_qr(1UZ, -1, 0, -1, 1, 1));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(2UZ, -1, 0, -1, 1, 1));
+        STATIC_CHECK(qr{0, 1} == index_to_qr(3UZ, -1, 0, -1, 1, 1));
+        STATIC_CHECK(qr{1, 0} == index_to_qr(4UZ, -1, 0, -1, 1, 1));
+    }
+    SECTION("parallelogram")
+    {
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(0UZ, -1, -1, 0, 1, 1));
+        STATIC_CHECK(qr{-1, 1} == index_to_qr(1UZ, -1, -1, 0, 1, 1));
+        STATIC_CHECK(qr{0, -1} == index_to_qr(2UZ, -1, -1, 0, 1, 1));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(3UZ, -1, -1, 0, 1, 1));
+
+        STATIC_CHECK(qr{-1, -1} == index_to_qr(0, -1, -1, -1, 0, 2));
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(1, -1, -1, -1, 0, 2));
+        STATIC_CHECK(qr{0, -1} == index_to_qr(2, -1, -1, -1, 0, 2));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(3, -1, -1, -1, 0, 2));
+        STATIC_CHECK(qr{1, -1} == index_to_qr(4, -1, -1, -1, 0, 2));
+        STATIC_CHECK(qr{1, 0} == index_to_qr(5, -1, -1, -1, 0, 2));
+
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(0, -1, -2, 0, 1, 1));
+        STATIC_CHECK(qr{-1, 1} == index_to_qr(1, -1, -2, 0, 1, 1));
+        STATIC_CHECK(qr{0, -1} == index_to_qr(2, -1, -2, 0, 1, 1));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(3, -1, -2, 0, 1, 1));
+        STATIC_CHECK(qr{1, -2} == index_to_qr(4, -1, -2, 0, 1, 1));
+        STATIC_CHECK(qr{1, -1} == index_to_qr(5, -1, -2, 0, 1, 1));
+    }
+    SECTION("pentagon")
+    {
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(0UZ, -1, -2, -1, 1, 1));
+        STATIC_CHECK(qr{-1, 1} == index_to_qr(1UZ, -1, -2, -1, 1, 1));
+        STATIC_CHECK(qr{0, -1} == index_to_qr(2UZ, -1, -2, -1, 1, 1));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(3UZ, -1, -2, -1, 1, 1));
+        STATIC_CHECK(qr{0, 1} == index_to_qr(4UZ, -1, -2, -1, 1, 1));
+        STATIC_CHECK(qr{1, -2} == index_to_qr(5UZ, -1, -2, -1, 1, 1));
+        STATIC_CHECK(qr{1, -1} == index_to_qr(6UZ, -1, -2, -1, 1, 1));
+        STATIC_CHECK(qr{1, 0} == index_to_qr(7UZ, -1, -2, -1, 1, 1));
+    }
+    SECTION("hexagon")
+    {
+        STATIC_CHECK(qr{-1, 0} == index_to_qr(0UZ, -1, -1, -1, 1, 1));
+        STATIC_CHECK(qr{-1, 1} == index_to_qr(1UZ, -1, -1, -1, 1, 1));
+        STATIC_CHECK(qr{0, -1} == index_to_qr(2UZ, -1, -1, -1, 1, 1));
+        STATIC_CHECK(qr{0, 0} == index_to_qr(3UZ, -1, -1, -1, 1, 1));
+        STATIC_CHECK(qr{0, 1} == index_to_qr(4UZ, -1, -1, -1, 1, 1));
+        STATIC_CHECK(qr{1, -1} == index_to_qr(5UZ, -1, -1, -1, 1, 1));
+        STATIC_CHECK(qr{1, 0} == index_to_qr(6UZ, -1, -1, -1, 1, 1));
+    }
+    SECTION("max size")
+    {
+        static constexpr std::int32_t radius = isosceles_trapezoid_max_base / 2;
+        static constexpr auto         size   = regular_hexagon_size(radius);
+        STATIC_CHECK(qr{-radius, 0} == index_to_qr(0, -radius, -radius, -radius, radius, radius));
+        STATIC_CHECK(qr{-radius, 1} == index_to_qr(1, -radius, -radius, -radius, radius, radius));
+        STATIC_CHECK(qr{radius, 0} == index_to_qr(size - 1, -radius, -radius, -radius, radius, radius));
+
+        STATIC_CHECK(qr{0, radius} == index_to_qr(0, 0, 0, -radius * 3LL, 2LL * radius, -radius));
+        STATIC_CHECK(qr{0, radius + 1} == index_to_qr(1, 0, 0, -radius * 3LL, 2LL * radius, -radius));
+        STATIC_CHECK(qr{2 * radius, radius} == index_to_qr(size - 1, 0, 0, -radius * 3LL, 2LL * radius, -radius));
     }
 }

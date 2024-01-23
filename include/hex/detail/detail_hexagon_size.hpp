@@ -29,6 +29,8 @@
 #include "hex/detail/detail_isosceles_trapezoid_size.hpp"
 
 #include <algorithm>
+#include <array>
+
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -98,6 +100,72 @@ constexpr auto qr_to_index(std::int64_t q,     // NOLINT(bugprone-easily-swappab
     std::int64_t const r_min2 = std::max(r_min, -s_max - q);
     std::int64_t const c      = r - r_min2;
     return b + c;
+}
+
+constexpr auto index_to_qr(std::size_t  idx,   // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t q_min, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t r_min, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t s_min, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t r_max, // NOLINT(bugprone-easily-swappable-parameters)
+                           std::int64_t s_max  // NOLINT(bugprone-easily-swappable-parameters)
+                           ) -> std::array<std::int64_t, 2>
+{
+    // Subdivide into left trapezoidal, right trapezoidal, and center rectangular part
+    std::int64_t const left_qmax  = std::min(-r_min - s_max, -r_max - s_min);
+    std::int64_t const right_qmin = std::max(std::max(-r_min - s_max, -r_max - s_min), left_qmax + 1);
+    std::size_t const  middle_h   = right_qmin - left_qmax - 1;
+
+    // Compute left trapezoid bounds
+    std::size_t const left_height = left_qmax - q_min + 1;
+    std::size_t const left_top    = r_max - (-q_min - s_max) + 1;
+    std::size_t const left_base   = r_max - (-left_qmax - s_max) + 1;
+    std::size_t const left_size   = isosceles_trapezoid_size_from_base_and_height(left_base, left_height);
+
+    // Compute right trapezoid bounds
+    std::size_t const right_base = (-right_qmin - s_min) - r_min + 1;
+
+    // Compute middle parallelogram
+    std::size_t const middle_size = middle_h * left_base;
+
+    // If idx is in the right trapezoid
+    if (idx >= left_size + middle_size)
+    {
+        std::size_t const  cor_idx       = idx - (left_size + middle_size);
+        std::size_t const  height        = isosceles_trapezoid_height_from_base_and_size(right_base, cor_idx + 1);
+        std::size_t const  row_from_base = height - 1;
+        std::int64_t const q             = right_qmin + static_cast<std::int64_t>(row_from_base);
+        std::size_t const  tiles_at_base = isosceles_trapezoid_size_from_base_and_height(right_base, row_from_base);
+        std::size_t const  r_offset      = cor_idx - tiles_at_base;
+        std::int64_t const r             = r_min + static_cast<std::int64_t>(r_offset);
+        return {q, r};
+    }
+
+    // If idx is in the middle parallelogram
+    if (idx >= left_size)
+    {
+        std::size_t const  cor_idx = idx - left_size;
+        std::size_t const  row     = cor_idx / left_base;
+        std::size_t const  col     = cor_idx % left_base;
+        std::int64_t const q       = left_qmax + 1 + static_cast<std::int64_t>(row);
+
+        bool const left_leaning = -s_max - r_min > -r_max - s_min;
+        if (left_leaning)
+        {
+            std::int64_t const s = s_max - static_cast<std::int64_t>(col);
+            return {q, -q - s};
+        }
+        std::int64_t const r = r_min + static_cast<std::int64_t>(col);
+        return {q, r};
+    }
+
+    // If idx is in the left trapezoid
+    std::size_t const  height       = isosceles_trapezoid_height_from_top_and_size(left_top, idx + 1);
+    std::size_t const  row_from_top = height - 1;
+    std::int64_t const q            = q_min + static_cast<std::int64_t>(row_from_top);
+    std::size_t const  tiles_at_top = isosceles_trapezoid_size_from_top_and_height(left_top, row_from_top);
+    std::size_t const  col          = idx - tiles_at_top;
+    std::int64_t const s            = s_max - static_cast<std::int64_t>(col);
+    return {q, -q - s};
 }
 } // namespace hex::detail
 
