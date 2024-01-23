@@ -39,7 +39,6 @@ namespace hex::detail
 // These are the maximum limits the below implementation can support without overflow.
 inline constexpr std::size_t isosceles_trapezoid_max_base   = std::numeric_limits<std::int32_t>::max();
 inline constexpr std::size_t isosceles_trapezoid_max_height = isosceles_trapezoid_max_base;
-inline constexpr std::size_t isosceles_trapezoid_max_size   = 2'305'843'008'139'952'128UZ;
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 constexpr auto isosceles_trapezoid_size_from_base_and_height(std::size_t base, std::size_t height) -> std::size_t
@@ -53,6 +52,11 @@ constexpr auto isosceles_trapezoid_size_from_base_and_height(std::size_t base, s
     auto const h_half = h / 2UZ;
     return h * (b - h_half) + h_half * (h % 2UZ == 0UZ); // NOLINT(readability-implicit-bool-conversion)
 }
+
+// Maximum size supported by these routines.
+inline constexpr std::size_t
+    isosceles_trapezoid_max_size = isosceles_trapezoid_size_from_base_and_height(isosceles_trapezoid_max_base,
+                                                                                 isosceles_trapezoid_max_height);
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 constexpr auto isosceles_trapezoid_size_from_top_and_height(std::size_t top, std::size_t height) -> std::size_t
