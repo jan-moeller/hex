@@ -43,6 +43,9 @@ inline constexpr std::size_t isosceles_trapezoid_max_height = isosceles_trapezoi
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 constexpr auto isosceles_trapezoid_size_from_base_and_height(std::size_t base, std::size_t height) -> std::size_t
 {
+    if (base == 0 || height == 0)
+        return 0;
+
     assert(height <= base);
 
     std::size_t const b = base;

@@ -36,6 +36,7 @@ inline constexpr T max = nl<T>::max();
 TEST_CASE("isosceles_trapezoid_size_from_base_and_height", "[detail]")
 {
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(0, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(0, 1) == 0);
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(1, 0) == 0);
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(1, 1) == 1);
     STATIC_CHECK(isosceles_trapezoid_size_from_base_and_height(2, 1) == 2);
@@ -54,6 +55,7 @@ TEST_CASE("isosceles_trapezoid_size_from_base_and_height", "[detail]")
 TEST_CASE("isosceles_trapezoid_size_from_top_and_height", "[detail]")
 {
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(0, 0) == 0);
+    STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(0, 1) == 0);
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(1, 0) == 0);
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(1, 1) == 1);
     STATIC_CHECK(isosceles_trapezoid_size_from_top_and_height(1, 2) == 3);
