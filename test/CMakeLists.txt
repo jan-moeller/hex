@@ -61,6 +61,7 @@ endif ()
 
 add_executable(${PROJECT_NAME}
         detail/test_hexagon_bounds.cpp
+        detail/test_hexagon_size.cpp
         detail/test_isosceles_trapezoid_size.cpp
         detail/test_sqrt.cpp
         test_coordinate.cpp
