@@ -25,14 +25,50 @@
 #ifndef HEX_DETAIL_HEXAGON_SIZE_HPP
 #define HEX_DETAIL_HEXAGON_SIZE_HPP
 
+#include "hex/detail/detail_isosceles_trapezoid_size.hpp"
+
+#include <algorithm>
 #include <cstddef>
+#include <cstdint>
 
 namespace hex::detail
 {
+// These algorithms work as long as max(q_max-q_min, r_max-r_min, s_max-s_min) <= isosceles_trapezoid_max_base
+
 // Computes the size of a regular hexagon.
 constexpr auto regular_hexagon_size(std::size_t radius) -> std::size_t
 {
     return 1UZ + 3UZ * radius * (radius + 1UZ);
+}
+
+// Computes the number of tiles in a hexagon assuming tight bounds.
+constexpr auto hexagon_size(std::int64_t q_min, // NOLINT(bugprone-easily-swappable-parameters)
+                            std::int64_t r_min, // NOLINT(bugprone-easily-swappable-parameters)
+                            std::int64_t s_min, // NOLINT(bugprone-easily-swappable-parameters)
+                            std::int64_t q_max, // NOLINT(bugprone-easily-swappable-parameters)
+                            std::int64_t r_max, // NOLINT(bugprone-easily-swappable-parameters)
+                            std::int64_t s_max  // NOLINT(bugprone-easily-swappable-parameters)
+                            ) -> std::size_t
+{
+    // Subdivide into left trapezoidal, right trapezoidal, and center rectangular part
+    auto const        left_qmax     = std::min(-r_min - s_max, -r_max - s_min);
+    auto const        right_qmin    = std::max(std::max(-r_min - s_max, -r_max - s_min), left_qmax + 1);
+    std::size_t const middle_height = right_qmin - left_qmax - 1;
+
+    // Compute left trapezoid bounds
+    std::size_t const left_height = left_qmax - q_min + 1;
+    std::size_t const left_base   = static_cast<std::size_t>(r_max) + left_qmax + s_max + 1;
+    std::size_t const left_size   = isosceles_trapezoid_size_from_base_and_height(left_base, left_height);
+
+    // Compute right trapezoid bounds
+    std::size_t const right_height = static_cast<std::size_t>(q_max) - right_qmin + 1;
+    std::size_t const right_base   = -r_min - right_qmin - s_min + 1;
+    std::size_t const right_size   = isosceles_trapezoid_size_from_base_and_height(right_base, right_height);
+
+    // Compute middle parallelogram
+    std::size_t const middle_size = middle_height * left_base;
+
+    return left_size + middle_size + right_size;
 }
 } // namespace hex::detail
 
