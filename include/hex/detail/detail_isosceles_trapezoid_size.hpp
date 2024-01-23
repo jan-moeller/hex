@@ -47,6 +47,8 @@ constexpr auto isosceles_trapezoid_size_from_base_and_height(std::size_t base, s
         return 0;
 
     assert(height <= base);
+    assert(base <= isosceles_trapezoid_max_base);
+    assert(height <= isosceles_trapezoid_max_height);
 
     std::size_t const b = base;
     std::size_t const h = height;
@@ -70,6 +72,9 @@ constexpr auto isosceles_trapezoid_size_from_top_and_height(std::size_t top, std
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 constexpr auto isosceles_trapezoid_height_from_base_and_size(std::size_t base, std::size_t size) -> std::size_t
 {
+    assert(base <= isosceles_trapezoid_max_base);
+    assert(size <= isosceles_trapezoid_max_size);
+
     // h = b - sqrt((4 * b + 4) * b - 8 * s + 1) / 2 + 1/2
     std::size_t const k = floor_sqrt((4UZ * base + 4UZ) * base + 1UZ - 8 * size);
     return base - k / 2UZ + (k % 2UZ == 0UZ); // NOLINT(readability-implicit-bool-conversion)
@@ -78,6 +83,8 @@ constexpr auto isosceles_trapezoid_height_from_base_and_size(std::size_t base, s
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 constexpr auto isosceles_trapezoid_height_from_top_and_size(std::size_t top, std::size_t size) -> std::size_t
 {
+    assert(size <= isosceles_trapezoid_max_size);
+
     // 1/2 (sqrt(8 * s + (1 - 2 * t) * (1 - 2 * t)) - 2 * t + 1)
     std::size_t const k = ceil_sqrt(8UZ * size + top * (4UZ * top - 4UZ) + 1UZ) - 2UZ * top + 1UZ;
     return k / 2UZ + (k % 2UZ != 0UZ); // NOLINT(readability-implicit-bool-conversion)
