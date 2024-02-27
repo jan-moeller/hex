@@ -25,7 +25,7 @@
 #ifndef HEX_DETAIL_ISOSCELES_TRAPEZOID_SIZE_HPP
 #define HEX_DETAIL_ISOSCELES_TRAPEZOID_SIZE_HPP
 
-#include "detail_sqrt.hpp"
+#include "hex/detail/detail_sqrt.hpp"
 
 #include <algorithm>
 #include <limits>
