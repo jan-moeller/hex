@@ -60,6 +60,7 @@ message(STATUS "Build tests:               ${HEX_BUILD_TESTS}")
 # Main target
 #############################################################################################################
 add_library(${PROJECT_NAME} INTERFACE
+        include/hex/convex_polygon_parameters.hpp
         include/hex/coordinate.hpp
         include/hex/coordinate_axis.hpp
         include/hex/detail/detail_arithmetic.hpp
