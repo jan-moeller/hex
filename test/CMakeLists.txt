@@ -60,6 +60,7 @@ endif ()
 #############################################################################################################
 
 add_executable(${PROJECT_NAME}
+        detail/test_bounded_polygon_iterator.cpp
         detail/test_hexagon_size.cpp
         detail/test_isosceles_trapezoid_size.cpp
         detail/test_sqrt.cpp
