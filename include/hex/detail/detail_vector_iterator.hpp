@@ -52,7 +52,12 @@ class vector_iterator
         return *this;
     }
 
-    constexpr auto operator++(int) -> vector_iterator { return ++auto(*this); }
+    constexpr auto operator++(int) -> vector_iterator
+    {
+        auto copy = *this;
+        ++(*this);
+        return copy;
+    }
 
     constexpr auto operator+=(difference_type n) -> vector_iterator&
     {
@@ -75,7 +80,12 @@ class vector_iterator
         return *this;
     }
 
-    constexpr auto operator--(int) -> vector_iterator { return --auto(*this); }
+    constexpr auto operator--(int) -> vector_iterator
+    {
+        auto copy = *this;
+        --(*this);
+        return copy;
+    }
 
     constexpr auto operator-=(difference_type n) -> vector_iterator&
     {
