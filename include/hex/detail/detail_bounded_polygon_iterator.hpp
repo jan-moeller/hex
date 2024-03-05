@@ -97,7 +97,7 @@ class bounded_polygon_iterator
         return cp;
     }
 
-    constexpr auto operator*() const noexcept -> vector<T> { return m_v; }
+    constexpr auto operator*() const noexcept -> vector<T> const& { return m_v; }
 
     constexpr auto operator==(bounded_polygon_iterator const&) const -> bool = default;
     constexpr auto operator<=>(bounded_polygon_iterator const&) const        = default;
