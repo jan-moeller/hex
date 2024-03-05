@@ -22,10 +22,12 @@
 // SOFTWARE.
 //
 #include "hex/detail/detail_bounded_polygon_iterator.hpp"
+#include "hex/vector.hpp"
 
 #include <catch2/catch_all.hpp>
 
 #include <iterator>
+#include <vector>
 
 using namespace hex;
 using namespace hex::detail;
@@ -85,5 +87,56 @@ TEST_CASE("bounded_polygon_iterator", "[detail]")
         STATIC_CHECK(a < b);
         STATIC_CHECK(b < c);
         STATIC_CHECK(b == b);
+    }
+
+    SECTION("iterates the expected elements")
+    {
+        SECTION("-q triangle")
+        {
+            auto const begin = bounded_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
+            auto const end   = ++bounded_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
+
+            CHECK(std::ranges::distance(begin, end) == 6);
+
+            std::vector<hex::vector<int>> const expected{{-1_q, 0_r},
+                                                         {0_q, -1_r},
+                                                         {0_q, 0_r},
+                                                         {1_q, -2_r},
+                                                         {1_q, -1_r},
+                                                         {1_q, 0_r}};
+            std::vector<hex::vector<int>> const elements(begin, end);
+            CHECK(elements == expected);
+        }
+        SECTION("+q triangle")
+        {
+            auto const begin = bounded_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{-1_q, -1_r});
+            auto const end   = ++bounded_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{1_q, -1_r});
+
+            CHECK(std::ranges::distance(begin, end) == 6);
+
+            std::vector<hex::vector<int>> const expected{{-1_q, -1_r},
+                                                         {-1_q, 0_r},
+                                                         {-1_q, 1_r},
+                                                         {0_q, -1_r},
+                                                         {0_q, 0_r},
+                                                         {1_q, -1_r}};
+            std::vector<hex::vector<int>> const elements(begin, end);
+            CHECK(elements == expected);
+        }
+        SECTION("quadrangle")
+        {
+            auto const begin = bounded_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
+            auto const end   = ++bounded_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
+
+            CHECK(std::ranges::distance(begin, end) == 5);
+
+            std::vector<hex::vector<int>> const expected{{-1_q, 0_r},
+                                                         {0_q, -1_r},
+                                                         {0_q, 0_r},
+                                                         {1_q, -1_r},
+                                                         {1_q, 0_r}};
+            std::vector<hex::vector<int>> const elements(begin, end);
+            CHECK(elements == expected);
+        }
     }
 }

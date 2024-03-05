@@ -90,11 +90,11 @@ template<detail::arithmetic T>
 constexpr auto convex_polygon_view<T>::end() const noexcept -> detail::bounded_polygon_iterator<T>
 {
     using namespace literals;
-    return detail::bounded_polygon_iterator<T>(m_params.rmin(),
-                                               m_params.smin(),
-                                               m_params.rmax(),
-                                               m_params.smax(),
-                                               vector(m_params.qmax() + 1_q, m_params.smin()));
+    return ++detail::bounded_polygon_iterator<T>(m_params.rmin(),
+                                                 m_params.smin(),
+                                                 m_params.rmax(),
+                                                 m_params.smax(),
+                                                 vector(m_params.qmax(), m_params.smin()));
 }
 
 template<detail::arithmetic T>
