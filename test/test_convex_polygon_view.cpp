@@ -63,6 +63,11 @@ TEST_CASE("convex_polygon_view")
         STATIC_CHECK(*[&]{return views::convex_polygon(params).begin();}() == vector{-2_q, 1_r});
     }
 
+    SECTION("constant range")
+    {
+        STATIC_CHECK(std::ranges::constant_range<convex_polygon_view<int>>);
+    }
+
     SECTION("generates the expected data")
     {
         STATIC_CHECK(std::ranges::all_of(views::convex_polygon(params),

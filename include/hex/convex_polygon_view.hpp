@@ -36,8 +36,8 @@
 
 namespace hex
 {
-// A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::bidirectional_range and
-// std::ranges::borrowed_range, producing all hex positions in a convex polygon.
+// A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::bidirectional_range,
+// std::ranges::borrowed_range and std::constant_range, producing all hex positions in a convex polygon.
 template<detail::arithmetic T>
 class convex_polygon_view
 {
