@@ -52,6 +52,17 @@ TEST_CASE("convex_polygon_view")
         STATIC_CHECK(std::ranges::size(views::convex_polygon(params)) == 10);
     }
 
+    SECTION("common range")
+    {
+        STATIC_CHECK(std::ranges::common_range<convex_polygon_view<int>>);
+    }
+
+    SECTION("borrowed range")
+    {
+        STATIC_CHECK(std::ranges::borrowed_range<convex_polygon_view<int>>);
+        STATIC_CHECK(*[&]{return views::convex_polygon(params).begin();}() == vector{-2_q, 1_r});
+    }
+
     SECTION("generates the expected data")
     {
         STATIC_CHECK(std::ranges::all_of(views::convex_polygon(params),
