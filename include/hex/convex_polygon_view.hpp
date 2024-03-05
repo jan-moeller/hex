@@ -119,4 +119,7 @@ constexpr auto views::convex_polygon(convex_polygon_parameters<T> const& params)
 
 } // namespace hex
 
+template<hex::detail::arithmetic T>
+inline constexpr bool std::ranges::enable_borrowed_range<hex::convex_polygon_view<T>> = true;
+
 #endif // HEX_CONVEX_POLYGON_VIEW_HPP
