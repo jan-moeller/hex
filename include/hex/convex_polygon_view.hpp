@@ -64,6 +64,8 @@ class convex_polygon_view
     }
     [[nodiscard]] constexpr auto size() const noexcept -> std::size_t { return m_params.count(); }
 
+    [[nodiscard]] constexpr auto operator==(convex_polygon_view const&) const -> bool = default;
+
   private:
     convex_polygon_parameters<T> m_params;
 };
