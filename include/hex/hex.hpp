@@ -30,6 +30,7 @@
 #include "hex/convex_polygon_view.hpp"
 #include "hex/coordinate.hpp"
 #include "hex/coordinate_axis.hpp"
+#include "hex/neighbors_view.hpp"
 #include "hex/rotation_steps.hpp"
 #include "hex/vector.hpp"
 // IWYU pragma: end_exports
