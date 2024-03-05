@@ -40,34 +40,14 @@ template<detail::arithmetic T>
 class convex_polygon_view
 {
   public:
-    constexpr convex_polygon_view(convex_polygon_parameters<T> const& params)
-        : m_params(params)
-    {
-    }
+    constexpr convex_polygon_view(convex_polygon_parameters<T> const& params);
 
-    [[nodiscard]] constexpr auto begin() const noexcept -> detail::bounded_polygon_iterator<T>
-    {
-        return detail::bounded_polygon_iterator<T>(m_params.rmin(),
-                                                   m_params.smin(),
-                                                   m_params.rmax(),
-                                                   m_params.smax(),
-                                                   vector(m_params.qmin(), m_params.smax()));
-    }
-    [[nodiscard]] constexpr auto end() const noexcept -> detail::bounded_polygon_iterator<T>
-    {
-        using namespace literals;
-        return detail::bounded_polygon_iterator<T>(m_params.rmin(),
-                                                   m_params.smin(),
-                                                   m_params.rmax(),
-                                                   m_params.smax(),
-                                                   vector(m_params.qmax() + 1_q, m_params.smin()));
-    }
-    [[nodiscard]] constexpr auto size() const noexcept -> std::size_t { return m_params.count(); }
+    [[nodiscard]] constexpr auto begin() const noexcept -> detail::bounded_polygon_iterator<T>;
+    [[nodiscard]] constexpr auto end() const noexcept -> detail::bounded_polygon_iterator<T>;
 
-    [[nodiscard]] constexpr auto contains(vector<T> const& v) const noexcept -> bool
-    {
-        return m_params.contains(v);
-    }
+    [[nodiscard]] constexpr auto size() const noexcept -> std::size_t;
+
+    [[nodiscard]] constexpr auto contains(vector<T> const& v) const noexcept -> bool;
 
     // Retrieves the parameters used for construction.
     [[nodiscard]] constexpr auto parameters() const noexcept -> convex_polygon_parameters<T> const&;
@@ -82,11 +62,60 @@ namespace views
 {
 // A range factory returning a bidirectional view of all positions in a convex polygon.
 template<std::signed_integral T = int>
-[[nodiscard]] constexpr auto convex_polygon(convex_polygon_parameters<T> const& params) -> convex_polygon_view<T>
+[[nodiscard]] constexpr auto convex_polygon(convex_polygon_parameters<T> const& params) -> convex_polygon_view<T>;
+} // namespace views
+
+// ------------------------------ implementation below ------------------------------
+
+template<detail::arithmetic T>
+constexpr convex_polygon_view<T>::convex_polygon_view(convex_polygon_parameters<T> const& params)
+    : m_params(params)
+{
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::begin() const noexcept -> detail::bounded_polygon_iterator<T>
+{
+    return detail::bounded_polygon_iterator<T>(m_params.rmin(),
+                                               m_params.smin(),
+                                               m_params.rmax(),
+                                               m_params.smax(),
+                                               vector(m_params.qmin(), m_params.smax()));
+}
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::end() const noexcept -> detail::bounded_polygon_iterator<T>
+{
+    using namespace literals;
+    return detail::bounded_polygon_iterator<T>(m_params.rmin(),
+                                               m_params.smin(),
+                                               m_params.rmax(),
+                                               m_params.smax(),
+                                               vector(m_params.qmax() + 1_q, m_params.smin()));
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::size() const noexcept -> std::size_t
+{
+    return m_params.count();
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::contains(vector<T> const& v) const noexcept -> bool
+{
+    return m_params.contains(v);
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::parameters() const noexcept -> convex_polygon_parameters<T> const&
+{
+    return m_params;
+}
+
+template<std::signed_integral T>
+constexpr auto views::convex_polygon(convex_polygon_parameters<T> const& params) -> convex_polygon_view<T>
 {
     return convex_polygon_view(params);
 }
-} // namespace views
 
 } // namespace hex
 
