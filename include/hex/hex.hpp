@@ -25,9 +25,11 @@
 #ifndef HEX_HEX_HPP
 #define HEX_HEX_HPP
 
+// IWYU pragma: begin_exports
 #include "hex/coordinate.hpp"
 #include "hex/coordinate_axis.hpp"
 #include "hex/rotation_steps.hpp"
 #include "hex/vector.hpp"
+// IWYU pragma: end_exports
 
 #endif // HEX_HEX_HPP
