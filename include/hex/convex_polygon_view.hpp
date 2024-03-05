@@ -36,10 +36,13 @@
 
 namespace hex
 {
+// A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::bidirectional_range and
+// std::ranges::borrowed_range, producing all hex positions in a convex polygon.
 template<detail::arithmetic T>
 class convex_polygon_view
 {
   public:
+    // Constructs the view with the given parameters.
     constexpr convex_polygon_view(convex_polygon_parameters<T> const& params);
 
     [[nodiscard]] constexpr auto begin() const noexcept -> detail::bounded_polygon_iterator<T>;
@@ -47,6 +50,7 @@ class convex_polygon_view
 
     [[nodiscard]] constexpr auto size() const noexcept -> std::size_t;
 
+    // Returns true if the given element is in the range, otherwise false. O(1).
     [[nodiscard]] constexpr auto contains(vector<T> const& v) const noexcept -> bool;
 
     // Retrieves the parameters used for construction.
