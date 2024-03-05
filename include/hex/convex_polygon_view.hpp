@@ -64,6 +64,11 @@ class convex_polygon_view
     }
     [[nodiscard]] constexpr auto size() const noexcept -> std::size_t { return m_params.count(); }
 
+    [[nodiscard]] constexpr auto contains(vector<T> const& v) const noexcept -> bool
+    {
+        return m_params.contains(v);
+    }
+
     // Retrieves the parameters used for construction.
     [[nodiscard]] constexpr auto parameters() const noexcept -> convex_polygon_parameters<T> const&;
 
