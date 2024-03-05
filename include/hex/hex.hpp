@@ -27,6 +27,7 @@
 
 // IWYU pragma: begin_exports
 #include "hex/convex_polygon_parameters.hpp"
+#include "hex/convex_polygon_view.hpp"
 #include "hex/coordinate.hpp"
 #include "hex/coordinate_axis.hpp"
 #include "hex/rotation_steps.hpp"
