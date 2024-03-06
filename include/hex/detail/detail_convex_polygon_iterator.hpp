@@ -39,7 +39,7 @@ class convex_polygon_iterator
 {
   public:
     using value_type        = vector<T>;
-    using reference         = value_type;
+    using reference         = value_type const;
     using difference_type   = std::ptrdiff_t;
     using iterator_category = std::bidirectional_iterator_tag;
 
@@ -97,7 +97,7 @@ class convex_polygon_iterator
         return cp;
     }
 
-    constexpr auto operator*() const noexcept -> vector<T> const& { return m_v; }
+    constexpr auto operator*() const noexcept -> reference { return m_v; } // NOLINT(readability-const-return-type)
 
     constexpr auto operator==(convex_polygon_iterator const&) const -> bool = default;
     constexpr auto operator<=>(convex_polygon_iterator const&) const        = default;
