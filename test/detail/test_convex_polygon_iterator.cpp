@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#include "hex/detail/detail_bounded_polygon_iterator.hpp"
+#include "hex/detail/detail_convex_polygon_iterator.hpp"
 #include "hex/vector.hpp"
 
 #include <catch2/catch_all.hpp>
@@ -32,27 +32,27 @@
 using namespace hex;
 using namespace hex::detail;
 
-TEST_CASE("bounded_polygon_iterator", "[detail]")
+TEST_CASE("convex_polygon_iterator", "[detail]")
 {
     using namespace hex::literals;
 
     SECTION("concept checks")
     {
-        STATIC_CHECK(std::weakly_incrementable<bounded_polygon_iterator<int>>);
-        STATIC_CHECK(std::input_or_output_iterator<bounded_polygon_iterator<int>>);
-        STATIC_CHECK(std::indirectly_readable<bounded_polygon_iterator<int>>);
-        STATIC_CHECK(std::input_iterator<bounded_polygon_iterator<int>>);
-        STATIC_CHECK(std::forward_iterator<bounded_polygon_iterator<int>>);
-        STATIC_CHECK(std::bidirectional_iterator<bounded_polygon_iterator<int>>);
+        STATIC_CHECK(std::weakly_incrementable<convex_polygon_iterator<int>>);
+        STATIC_CHECK(std::input_or_output_iterator<convex_polygon_iterator<int>>);
+        STATIC_CHECK(std::indirectly_readable<convex_polygon_iterator<int>>);
+        STATIC_CHECK(std::input_iterator<convex_polygon_iterator<int>>);
+        STATIC_CHECK(std::forward_iterator<convex_polygon_iterator<int>>);
+        STATIC_CHECK(std::bidirectional_iterator<convex_polygon_iterator<int>>);
     }
 
     SECTION("default constructed must compare equal")
     {
-        STATIC_CHECK(bounded_polygon_iterator<int>() == bounded_polygon_iterator<int>());
+        STATIC_CHECK(convex_polygon_iterator<int>() == convex_polygon_iterator<int>());
     }
     SECTION("++iter")
     {
-        bounded_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
+        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
         ++iter;
         CHECK(*iter == vector{-2_q, 2_r});
         ++iter;
@@ -60,13 +60,13 @@ TEST_CASE("bounded_polygon_iterator", "[detail]")
     }
     SECTION("iter++")
     {
-        bounded_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
+        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
         CHECK(*(iter++) == vector{-2_q, 1_r});
         CHECK(*iter == vector{-2_q, 2_r});
     }
     SECTION("--iter")
     {
-        bounded_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
+        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
         --iter;
         CHECK(*iter == vector{-1_q, 0_r});
         --iter;
@@ -74,16 +74,16 @@ TEST_CASE("bounded_polygon_iterator", "[detail]")
     }
     SECTION("iter--")
     {
-        bounded_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
+        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
         CHECK(*(iter--) == vector{-1_q, 1_r});
         CHECK(*iter == vector{-1_q, 0_r});
     }
 
     SECTION("ordering")
     {
-        constexpr bounded_polygon_iterator<int> a(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
-        constexpr bounded_polygon_iterator<int> b(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
-        constexpr bounded_polygon_iterator<int> c(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 2_r});
+        constexpr convex_polygon_iterator<int> a(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
+        constexpr convex_polygon_iterator<int> b(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
+        constexpr convex_polygon_iterator<int> c(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 2_r});
         STATIC_CHECK(a < b);
         STATIC_CHECK(b < c);
         STATIC_CHECK(b == b);
@@ -93,8 +93,8 @@ TEST_CASE("bounded_polygon_iterator", "[detail]")
     {
         SECTION("-q triangle")
         {
-            auto const begin = bounded_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
-            auto const end   = ++bounded_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
+            auto const begin = convex_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
+            auto const end   = ++convex_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
 
             CHECK(std::ranges::distance(begin, end) == 6);
 
@@ -109,8 +109,8 @@ TEST_CASE("bounded_polygon_iterator", "[detail]")
         }
         SECTION("+q triangle")
         {
-            auto const begin = bounded_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{-1_q, -1_r});
-            auto const end   = ++bounded_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{1_q, -1_r});
+            auto const begin = convex_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{-1_q, -1_r});
+            auto const end   = ++convex_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{1_q, -1_r});
 
             CHECK(std::ranges::distance(begin, end) == 6);
 
@@ -125,8 +125,8 @@ TEST_CASE("bounded_polygon_iterator", "[detail]")
         }
         SECTION("quadrangle")
         {
-            auto const begin = bounded_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
-            auto const end   = ++bounded_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
+            auto const begin = convex_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
+            auto const end   = ++convex_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
 
             CHECK(std::ranges::distance(begin, end) == 5);
 

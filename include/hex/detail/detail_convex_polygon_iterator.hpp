@@ -35,7 +35,7 @@
 namespace hex::detail
 {
 template<typename T>
-class bounded_polygon_iterator
+class convex_polygon_iterator
 {
   public:
     using value_type        = vector<T>;
@@ -43,12 +43,12 @@ class bounded_polygon_iterator
     using difference_type   = std::ptrdiff_t;
     using iterator_category = std::bidirectional_iterator_tag;
 
-    constexpr bounded_polygon_iterator() = default;
-    constexpr bounded_polygon_iterator(r_coordinate<T> rmin,
-                                       s_coordinate<T> smin,
-                                       r_coordinate<T> rmax,
-                                       s_coordinate<T> smax,
-                                       vector<T>       v)
+    constexpr convex_polygon_iterator() = default;
+    constexpr convex_polygon_iterator(r_coordinate<T> rmin,
+                                      s_coordinate<T> smin,
+                                      r_coordinate<T> rmax,
+                                      s_coordinate<T> smax,
+                                      vector<T>       v)
         : m_rmin(rmin)
         , m_smin(smin)
         , m_rmax(rmax)
@@ -57,7 +57,7 @@ class bounded_polygon_iterator
     {
     }
 
-    constexpr auto operator++() noexcept -> bounded_polygon_iterator&
+    constexpr auto operator++() noexcept -> convex_polygon_iterator&
     {
         using namespace literals;
         if (m_v.r() < m_rmax && m_v.s() > m_smin)
@@ -70,14 +70,14 @@ class bounded_polygon_iterator
         }
         return *this;
     }
-    constexpr auto operator++(int) noexcept -> bounded_polygon_iterator
+    constexpr auto operator++(int) noexcept -> convex_polygon_iterator
     {
         auto cp = *this;
         ++(*this);
         return cp;
     }
 
-    constexpr auto operator--() noexcept -> bounded_polygon_iterator&
+    constexpr auto operator--() noexcept -> convex_polygon_iterator&
     {
         using namespace literals;
         if (m_v.r() > m_rmin && m_v.s() < m_smax)
@@ -90,7 +90,7 @@ class bounded_polygon_iterator
         }
         return *this;
     }
-    constexpr auto operator--(int) noexcept -> bounded_polygon_iterator
+    constexpr auto operator--(int) noexcept -> convex_polygon_iterator
     {
         auto cp = *this;
         --(*this);
@@ -99,8 +99,8 @@ class bounded_polygon_iterator
 
     constexpr auto operator*() const noexcept -> vector<T> const& { return m_v; }
 
-    constexpr auto operator==(bounded_polygon_iterator const&) const -> bool = default;
-    constexpr auto operator<=>(bounded_polygon_iterator const&) const        = default;
+    constexpr auto operator==(convex_polygon_iterator const&) const -> bool = default;
+    constexpr auto operator<=>(convex_polygon_iterator const&) const        = default;
 
   private:
     r_coordinate<T> m_rmin;

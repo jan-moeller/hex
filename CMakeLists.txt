@@ -65,7 +65,7 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/coordinate.hpp
         include/hex/coordinate_axis.hpp
         include/hex/detail/detail_arithmetic.hpp
-        include/hex/detail/detail_bounded_polygon_iterator.hpp
+        include/hex/detail/detail_convex_polygon_iterator.hpp
         include/hex/detail/detail_hexagon_size.hpp
         include/hex/detail/detail_isosceles_trapezoid_size.hpp
         include/hex/detail/detail_narrowing.hpp

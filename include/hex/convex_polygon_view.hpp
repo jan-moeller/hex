@@ -27,7 +27,7 @@
 
 #include "hex/convex_polygon_parameters.hpp"
 #include "hex/detail/detail_arithmetic.hpp"
-#include "hex/detail/detail_bounded_polygon_iterator.hpp"
+#include "hex/detail/detail_convex_polygon_iterator.hpp"
 #include "hex/vector.hpp"
 
 #include <concepts>
@@ -45,8 +45,8 @@ class convex_polygon_view
     // Constructs the view with the given parameters.
     constexpr convex_polygon_view(convex_polygon_parameters<T> const& params);
 
-    [[nodiscard]] constexpr auto begin() const noexcept -> detail::bounded_polygon_iterator<T>;
-    [[nodiscard]] constexpr auto end() const noexcept -> detail::bounded_polygon_iterator<T>;
+    [[nodiscard]] constexpr auto begin() const noexcept -> detail::convex_polygon_iterator<T>;
+    [[nodiscard]] constexpr auto end() const noexcept -> detail::convex_polygon_iterator<T>;
 
     [[nodiscard]] constexpr auto size() const noexcept -> std::size_t;
 
@@ -78,19 +78,19 @@ constexpr convex_polygon_view<T>::convex_polygon_view(convex_polygon_parameters<
 }
 
 template<detail::arithmetic T>
-constexpr auto convex_polygon_view<T>::begin() const noexcept -> detail::bounded_polygon_iterator<T>
+constexpr auto convex_polygon_view<T>::begin() const noexcept -> detail::convex_polygon_iterator<T>
 {
-    return detail::bounded_polygon_iterator<T>(m_params.rmin(),
+    return detail::convex_polygon_iterator<T>(m_params.rmin(),
                                                m_params.smin(),
                                                m_params.rmax(),
                                                m_params.smax(),
                                                vector(m_params.qmin(), m_params.smax()));
 }
 template<detail::arithmetic T>
-constexpr auto convex_polygon_view<T>::end() const noexcept -> detail::bounded_polygon_iterator<T>
+constexpr auto convex_polygon_view<T>::end() const noexcept -> detail::convex_polygon_iterator<T>
 {
     using namespace literals;
-    return ++detail::bounded_polygon_iterator<T>(m_params.rmin(),
+    return ++detail::convex_polygon_iterator<T>(m_params.rmin(),
                                                  m_params.smin(),
                                                  m_params.rmax(),
                                                  m_params.smax(),
