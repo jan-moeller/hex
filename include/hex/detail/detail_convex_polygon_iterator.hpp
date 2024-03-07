@@ -93,8 +93,13 @@ class convex_polygon_iterator
 
     constexpr auto operator*() const noexcept -> reference { return m_v; } // NOLINT(readability-const-return-type)
 
-    constexpr auto operator==(convex_polygon_iterator const&) const -> bool = default;
-    constexpr auto operator<=>(convex_polygon_iterator const&) const        = default;
+    constexpr auto operator==(convex_polygon_iterator const& other) const -> bool
+    {
+        return (!m_params.has_value() && !other.m_params.has_value())
+               || (!m_params.has_value() && !other.m_params->contains(other.m_v))
+               || (!other.m_params.has_value() && !m_params->contains(m_v))
+               || (m_params == other.m_params && m_v == other.m_v);
+    }
 
   private:
     std::optional<convex_polygon_parameters<T>> m_params;
