@@ -83,11 +83,17 @@ if (NOT HEX_TEST_INSTALLED_VERSION)
     )
     target_compile_options(${LIB_UNDER_TEST} INTERFACE
             $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -fsanitize=address>
+    )
+    target_link_options(${LIB_UNDER_TEST} INTERFACE
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
     )
     target_compile_options(${PROJECT_NAME} INTERFACE
             $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -fsanitize=address>
+    )
+    target_link_options(${PROJECT_NAME} INTERFACE
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
     )
 endif ()
 
