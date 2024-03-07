@@ -67,6 +67,7 @@ add_executable(${PROJECT_NAME}
         test_convex_polygon_parameters.cpp
         test_convex_polygon_view.cpp
         test_coordinate.cpp
+        test_grid.cpp
         test_neighbors_view.cpp
         test_vector.cpp
 )
