@@ -52,7 +52,7 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
     }
     SECTION("++iter")
     {
-        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
+        convex_polygon_iterator<int> iter({-2_q, -1_r, -1_s, 1_q, 2_r, 1_s}, vector{-2_q, 1_r});
         ++iter;
         CHECK(*iter == vector{-2_q, 2_r});
         ++iter;
@@ -60,13 +60,13 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
     }
     SECTION("iter++")
     {
-        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-2_q, 1_r});
+        convex_polygon_iterator<int> iter({-2_q, -1_r, -1_s, 1_q, 2_r, 1_s}, vector{-2_q, 1_r});
         CHECK(*(iter++) == vector{-2_q, 1_r});
         CHECK(*iter == vector{-2_q, 2_r});
     }
     SECTION("--iter")
     {
-        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
+        convex_polygon_iterator<int> iter({-2_q, -1_r, -1_s, 1_q, 2_r, 1_s}, vector{-1_q, 1_r});
         --iter;
         CHECK(*iter == vector{-1_q, 0_r});
         --iter;
@@ -74,7 +74,7 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
     }
     SECTION("iter--")
     {
-        convex_polygon_iterator<int> iter(-1_r, -1_s, 2_r, 1_s, vector{-1_q, 1_r});
+        convex_polygon_iterator<int> iter({-2_q, -1_r, -1_s, 1_q, 2_r, 1_s}, vector{-1_q, 1_r});
         CHECK(*(iter--) == vector{-1_q, 1_r});
         CHECK(*iter == vector{-1_q, 0_r});
     }
@@ -93,8 +93,8 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
     {
         SECTION("-q triangle")
         {
-            auto const begin = convex_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
-            auto const end   = ++convex_polygon_iterator<int>(-2_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
+            auto const begin = convex_polygon_iterator<int>({-1_q, -2_r, -1_s, 1_q, 0_r, 1_s}, vector{-1_q, 0_r});
+            auto const end   = ++convex_polygon_iterator<int>({-1_q, -2_r, -1_s, 1_q, 0_r, 1_s}, vector{1_q, 0_r});
 
             CHECK(std::ranges::distance(begin, end) == 6);
 
@@ -109,8 +109,8 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
         }
         SECTION("+q triangle")
         {
-            auto const begin = convex_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{-1_q, -1_r});
-            auto const end   = ++convex_polygon_iterator<int>(-1_r, 0_s, 1_r, 2_s, vector{1_q, -1_r});
+            auto const begin = convex_polygon_iterator<int>({-1_q, -1_r, 0_s, 1_q, 1_r, 2_s}, vector{-1_q, -1_r});
+            auto const end   = ++convex_polygon_iterator<int>({-1_q, -1_r, 0_s, 1_q, 1_r, 2_s}, vector{1_q, -1_r});
 
             CHECK(std::ranges::distance(begin, end) == 6);
 
@@ -125,16 +125,12 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
         }
         SECTION("quadrangle")
         {
-            auto const begin = convex_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{-1_q, 0_r});
-            auto const end   = ++convex_polygon_iterator<int>(-1_r, -1_s, 0_r, 1_s, vector{1_q, 0_r});
+            auto const begin = convex_polygon_iterator<int>({-1_q, -1_r, -1_s, 1_q, 0_r, 1_s}, vector{-1_q, 0_r});
+            auto const end   = ++convex_polygon_iterator<int>({-1_q, -1_r, -1_s, 1_q, 0_r, 1_s}, vector{1_q, 0_r});
 
             CHECK(std::ranges::distance(begin, end) == 5);
 
-            std::vector<hex::vector<int>> const expected{{-1_q, 0_r},
-                                                         {0_q, -1_r},
-                                                         {0_q, 0_r},
-                                                         {1_q, -1_r},
-                                                         {1_q, 0_r}};
+            std::vector<hex::vector<int>> const expected{{-1_q, 0_r}, {0_q, -1_r}, {0_q, 0_r}, {1_q, -1_r}, {1_q, 0_r}};
             std::vector<hex::vector<int>> const elements(begin, end);
             CHECK(elements == expected);
         }

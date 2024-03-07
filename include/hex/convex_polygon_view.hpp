@@ -80,21 +80,13 @@ constexpr convex_polygon_view<T>::convex_polygon_view(convex_polygon_parameters<
 template<detail::arithmetic T>
 constexpr auto convex_polygon_view<T>::begin() const noexcept -> detail::convex_polygon_iterator<T>
 {
-    return detail::convex_polygon_iterator<T>(m_params.rmin(),
-                                               m_params.smin(),
-                                               m_params.rmax(),
-                                               m_params.smax(),
-                                               vector(m_params.qmin(), m_params.smax()));
+    return detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmin(), m_params.smax()));
 }
 template<detail::arithmetic T>
 constexpr auto convex_polygon_view<T>::end() const noexcept -> detail::convex_polygon_iterator<T>
 {
     using namespace literals;
-    return ++detail::convex_polygon_iterator<T>(m_params.rmin(),
-                                                 m_params.smin(),
-                                                 m_params.rmax(),
-                                                 m_params.smax(),
-                                                 vector(m_params.qmax(), m_params.smin()));
+    return ++detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmax(), m_params.smin()));
 }
 
 template<detail::arithmetic T>

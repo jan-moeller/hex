@@ -25,10 +25,11 @@
 #ifndef DETAIL_BOUNDED_POLYGON_ITERATOR_HPP
 #define DETAIL_BOUNDED_POLYGON_ITERATOR_HPP
 
-#include "hex/coordinate.hpp"
+#include "hex/convex_polygon_parameters.hpp"
 #include "hex/vector.hpp"
 
 #include <iterator>
+#include <optional>
 
 #include <cstddef>
 
@@ -44,15 +45,8 @@ class convex_polygon_iterator
     using iterator_category = std::bidirectional_iterator_tag;
 
     constexpr convex_polygon_iterator() = default;
-    constexpr convex_polygon_iterator(r_coordinate<T> rmin,
-                                      s_coordinate<T> smin,
-                                      r_coordinate<T> rmax,
-                                      s_coordinate<T> smax,
-                                      vector<T>       v)
-        : m_rmin(rmin)
-        , m_smin(smin)
-        , m_rmax(rmax)
-        , m_smax(smax)
+    constexpr convex_polygon_iterator(convex_polygon_parameters<T> params, vector<T> v)
+        : m_params(params)
         , m_v(v)
     {
     }
@@ -60,13 +54,13 @@ class convex_polygon_iterator
     constexpr auto operator++() noexcept -> convex_polygon_iterator&
     {
         using namespace literals;
-        if (m_v.r() < m_rmax && m_v.s() > m_smin)
+        if (m_v.r() < m_params->rmax() && m_v.s() > m_params->smin())
             m_v.set(m_v.q(), m_v.r() + 1_r);
         else
         {
-            m_v.set(m_v.q() + 1_q, m_rmin);
-            if (m_v.s() > m_smax)
-                m_v.set(m_v.q(), m_smax);
+            m_v.set(m_v.q() + 1_q, m_params->rmin());
+            if (m_v.s() > m_params->smax())
+                m_v.set(m_v.q(), m_params->smax());
         }
         return *this;
     }
@@ -80,13 +74,13 @@ class convex_polygon_iterator
     constexpr auto operator--() noexcept -> convex_polygon_iterator&
     {
         using namespace literals;
-        if (m_v.r() > m_rmin && m_v.s() < m_smax)
+        if (m_v.r() > m_params->rmin() && m_v.s() < m_params->smax())
             m_v.set(m_v.q(), m_v.r() - 1_r);
         else
         {
-            m_v.set(m_v.q() - 1_q, m_rmax);
-            if (m_v.s() < m_smin)
-                m_v.set(m_v.q(), m_smin);
+            m_v.set(m_v.q() - 1_q, m_params->rmax());
+            if (m_v.s() < m_params->smin())
+                m_v.set(m_v.q(), m_params->smin());
         }
         return *this;
     }
@@ -103,11 +97,8 @@ class convex_polygon_iterator
     constexpr auto operator<=>(convex_polygon_iterator const&) const        = default;
 
   private:
-    r_coordinate<T> m_rmin;
-    s_coordinate<T> m_smin;
-    r_coordinate<T> m_rmax;
-    s_coordinate<T> m_smax;
-    vector<T>       m_v;
+    std::optional<convex_polygon_parameters<T>> m_params;
+    vector<T>                                   m_v;
 };
 } // namespace hex::detail
 
