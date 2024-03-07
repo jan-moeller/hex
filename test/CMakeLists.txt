@@ -83,6 +83,7 @@ if (NOT HEX_TEST_INSTALLED_VERSION)
     )
     target_compile_options(${LIB_UNDER_TEST} INTERFACE
             $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+            $<$<CXX_COMPILER_ID:GNU>:-Wno-maybe-uninitialized> # -Wmaybe-uninitialized has false positives with -O3
             $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -fsanitize=address>
     )
     target_link_options(${LIB_UNDER_TEST} INTERFACE
@@ -90,6 +91,7 @@ if (NOT HEX_TEST_INSTALLED_VERSION)
     )
     target_compile_options(${PROJECT_NAME} INTERFACE
             $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+            $<$<CXX_COMPILER_ID:GNU>:-Wno-maybe-uninitialized> # -Wmaybe-uninitialized has false positives with -O3
             $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -fsanitize=address>
     )
     target_link_options(${PROJECT_NAME} INTERFACE
