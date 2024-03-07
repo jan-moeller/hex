@@ -41,7 +41,8 @@ class convex_polygon_iterator
   public:
     using value_type        = vector<T>;
     using difference_type   = std::ptrdiff_t;
-    using iterator_category = std::bidirectional_iterator_tag;
+    using iterator_concept  = std::bidirectional_iterator_tag;
+    using iterator_category = std::input_iterator_tag;
 
     constexpr convex_polygon_iterator() = default;
     constexpr convex_polygon_iterator(convex_polygon_parameters<T> params, vector<T> v)
