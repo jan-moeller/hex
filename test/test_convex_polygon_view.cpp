@@ -84,4 +84,9 @@ TEST_CASE("convex_polygon_view")
                                   | std::views::filter([&excluded](vector<int> v) { return !excluded.contains(v); }))
             == 7);
     }
+
+    SECTION("default constructed iterator compares equal to end()")
+    {
+        STATIC_CHECK(views::convex_polygon(params).end() == std::ranges::const_iterator_t<convex_polygon_view<int>>());
+    }
 }
