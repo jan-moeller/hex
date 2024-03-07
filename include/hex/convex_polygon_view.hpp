@@ -31,6 +31,7 @@
 #include "hex/vector.hpp"
 
 #include <concepts>
+#include <ranges>
 
 #include <cstddef>
 
@@ -39,7 +40,7 @@ namespace hex
 // A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::bidirectional_range,
 // std::ranges::borrowed_range and std::constant_range, producing all hex positions in a convex polygon.
 template<detail::arithmetic T>
-class convex_polygon_view
+class convex_polygon_view : public std::ranges::view_interface<convex_polygon_view<T>>
 {
   public:
     // Constructs the view with the given parameters.
@@ -56,7 +57,7 @@ class convex_polygon_view
     // Retrieves the parameters used for construction.
     [[nodiscard]] constexpr auto parameters() const noexcept -> convex_polygon_parameters<T> const&;
 
-    [[nodiscard]] constexpr auto operator==(convex_polygon_view const&) const -> bool = default;
+    [[nodiscard]] constexpr auto operator==(convex_polygon_view const&) const -> bool;
 
   private:
     convex_polygon_parameters<T> m_params;
@@ -105,6 +106,12 @@ template<detail::arithmetic T>
 constexpr auto convex_polygon_view<T>::parameters() const noexcept -> convex_polygon_parameters<T> const&
 {
     return m_params;
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::operator==(convex_polygon_view const& other) const -> bool
+{
+    return m_params == other.m_params;
 }
 
 template<std::signed_integral T>
