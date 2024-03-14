@@ -22,21 +22,18 @@
 // SOFTWARE.
 //
 
-#ifndef HEX_HEX_HPP
-#define HEX_HEX_HPP
+#ifndef HEX_OFFSET_PARITY_HPP
+#define HEX_OFFSET_PARITY_HPP
 
-// IWYU pragma: begin_exports
-#include "hex/convex_grid_shape.hpp"
-#include "hex/convex_polygon_parameters.hpp"
-#include "hex/convex_polygon_view.hpp"
-#include "hex/coordinate.hpp"
-#include "hex/coordinate_axis.hpp"
-#include "hex/grid.hpp"
-#include "hex/neighbors_view.hpp"
-#include "hex/offset_parity.hpp"
-#include "hex/offset_rows_view.hpp"
-#include "hex/rotation_steps.hpp"
-#include "hex/vector.hpp"
-// IWYU pragma: end_exports
+#include <cstdint>
 
-#endif // HEX_HEX_HPP
+namespace hex
+{
+enum class offset_parity : std::uint8_t
+{
+    even,
+    odd,
+};
+}
+
+#endif // HEX_OFFSET_PARITY_HPP

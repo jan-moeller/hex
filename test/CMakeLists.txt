@@ -69,6 +69,7 @@ add_executable(${PROJECT_NAME}
         test_coordinate.cpp
         test_grid.cpp
         test_neighbors_view.cpp
+        test_offset_rows_view.cpp
         test_vector.cpp
 )
 target_link_libraries(${PROJECT_NAME} Catch2::Catch2WithMain ${LIB_UNDER_TEST}::${LIB_UNDER_TEST})

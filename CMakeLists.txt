@@ -72,12 +72,15 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/detail/detail_isosceles_trapezoid_size.hpp
         include/hex/detail/detail_narrowing.hpp
         include/hex/detail/detail_neighbors.hpp
+        include/hex/detail/detail_offset_conversion.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
         include/hex/detail/detail_sqrt.hpp
         include/hex/detail/detail_vector_iterator.hpp
         include/hex/grid.hpp
         include/hex/hex.hpp
         include/hex/neighbors_view.hpp
+        include/hex/offset_parity.hpp
+        include/hex/offset_rows_view.hpp
         include/hex/rotation_steps.hpp
         include/hex/vector.hpp
 )
