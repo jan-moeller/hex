@@ -31,6 +31,7 @@ project(${LIB_UNDER_TEST}-tests LANGUAGES CXX)
 #############################################################################################################
 option(HEX_ENABLE_TEST_COVERAGE "Enable test coverage" OFF)
 option(HEX_TEST_INSTALLED_VERSION "Test the version found by find_package" OFF)
+option(HEX_USE_ASAN "Enable address sanitizer in the test build" OFF)
 
 message(STATUS "------------------------------------------------------------------------------")
 message(STATUS "    ${PROJECT_NAME} (${PROJECT_VERSION})")
@@ -38,6 +39,7 @@ message(STATUS "----------------------------------------------------------------
 message(STATUS "Build type:                ${CMAKE_BUILD_TYPE}")
 message(STATUS "Test coverage:             ${HEX_ENABLE_TEST_COVERAGE}")
 message(STATUS "Test installed:            ${HEX_TEST_INSTALLED_VERSION}")
+message(STATUS "Use address sanitizer      ${HEX_USE_ASAN}")
 
 #############################################################################################################
 # Dependencies
@@ -86,19 +88,28 @@ if (NOT HEX_TEST_INSTALLED_VERSION)
     target_compile_options(${LIB_UNDER_TEST} INTERFACE
             $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
             $<$<CXX_COMPILER_ID:GNU>:-Wno-maybe-uninitialized> # -Wmaybe-uninitialized has false positives with -O3
-            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -fsanitize=address>
-    )
-    target_link_options(${LIB_UNDER_TEST} INTERFACE
-            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
     )
     target_compile_options(${PROJECT_NAME} INTERFACE
             $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
             $<$<CXX_COMPILER_ID:GNU>:-Wno-maybe-uninitialized> # -Wmaybe-uninitialized has false positives with -O3
-            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -fsanitize=address>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
     )
-    target_link_options(${PROJECT_NAME} INTERFACE
-            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
-    )
+
+    if (HEX_USE_ASAN)
+        target_compile_options(${LIB_UNDER_TEST} INTERFACE
+                $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
+        )
+        target_link_options(${LIB_UNDER_TEST} INTERFACE
+                $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
+        )
+        target_compile_options(${PROJECT_NAME} PUBLIC
+                $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
+        )
+        target_link_options(${PROJECT_NAME} PUBLIC
+                $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address>
+        )
+    endif ()
 endif ()
 
 list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
