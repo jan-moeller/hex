@@ -17,6 +17,7 @@ jobs:
         os: [ ubuntu-22.04 ]
         build_type: [ Debug, Release ]
         c_compiler: [ gcc-13 ]
+        asan: [ ON, OFF ]
         include:
           - os: ubuntu-22.04
             c_compiler: gcc-13
@@ -64,6 +65,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DHEX_USE_ASAN=${{ matrix.asan }}
           -S ${{ github.workspace }}/test
 
       - name: Build tests
