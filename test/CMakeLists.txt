@@ -65,6 +65,7 @@ add_executable(${PROJECT_NAME}
         detail/test_convex_polygon_iterator.cpp
         detail/test_hexagon_size.cpp
         detail/test_isosceles_trapezoid_size.cpp
+        detail/test_offset_conversion.cpp
         detail/test_sqrt.cpp
         test_convex_polygon_parameters.cpp
         test_convex_polygon_view.cpp
