@@ -38,13 +38,16 @@ TEST_CASE("offset_rows_view")
     {
         STATIC_CHECK(std::ranges::random_access_range<offset_rows_view<int>>);
         STATIC_CHECK(std::ranges::sized_range<offset_rows_view<int>>);
+        STATIC_CHECK(std::ranges::constant_range<offset_rows_view<int>>);
+        STATIC_CHECK(std::ranges::common_range<offset_rows_view<int>>);
+        STATIC_CHECK(std::ranges::borrowed_range<offset_rows_view<int>>);
     }
 
     SECTION("q axis")
     {
         SECTION("odd")
         {
-            constexpr auto view = views::offset_rows(coordinate_axis::q, offset_parity::odd, 3, 5, {-1_q, -2_r});
+            constexpr auto view = views::offset_rows({3, 5, coordinate_axis::q, offset_parity::odd, {-1_q, -2_r}});
             STATIC_CHECK(view.size() == 5 * 3);
 
             constexpr auto expected = std::array{
@@ -68,10 +71,15 @@ TEST_CASE("offset_rows_view")
                 vector{1_q, 1_r},
             };
             STATIC_CHECK(std::ranges::equal(view, expected));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.contains(v); }));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.find(v) != view.end(); }));
+            STATIC_CHECK(std::ranges::all_of(std::views::enumerate(expected),
+                                             [&](auto&& p)
+                                             { return view[std::get<1>(p)] == (std::size_t)std::get<0>(p); }));
         }
         SECTION("even")
         {
-            constexpr auto view = views::offset_rows(coordinate_axis::q, offset_parity::even, 3, 5, {-1_q, -2_r});
+            constexpr auto view = views::offset_rows({3, 5, coordinate_axis::q, offset_parity::even, {-1_q, -2_r}});
             STATIC_CHECK(view.size() == 5 * 3);
 
             constexpr auto expected = std::array{
@@ -95,13 +103,18 @@ TEST_CASE("offset_rows_view")
                 vector{1_q, 1_r},
             };
             STATIC_CHECK(std::ranges::equal(view, expected));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.contains(v); }));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.find(v) != view.end(); }));
+            STATIC_CHECK(std::ranges::all_of(std::views::enumerate(expected),
+                                             [&](auto&& p)
+                                             { return view[std::get<1>(p)] == (std::size_t)std::get<0>(p); }));
         }
     }
     SECTION("r axis")
     {
         SECTION("odd")
         {
-            constexpr auto view = views::offset_rows(coordinate_axis::r, offset_parity::odd, 3, 5, {-1_q, -2_r});
+            constexpr auto view = views::offset_rows({3, 5, coordinate_axis::r, offset_parity::odd, {-1_q, -2_r}});
             STATIC_CHECK(view.size() == 5 * 3);
 
             constexpr auto expected = std::array{
@@ -125,10 +138,15 @@ TEST_CASE("offset_rows_view")
                 vector{-6_q, 0_r},
             };
             STATIC_CHECK(std::ranges::equal(view, expected));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.contains(v); }));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.find(v) != view.end(); }));
+            STATIC_CHECK(std::ranges::all_of(std::views::enumerate(expected),
+                                             [&](auto&& p)
+                                             { return view[std::get<1>(p)] == (std::size_t)std::get<0>(p); }));
         }
         SECTION("even")
         {
-            constexpr auto view = views::offset_rows(coordinate_axis::r, offset_parity::even, 3, 5, {-1_q, -2_r});
+            constexpr auto view = views::offset_rows({3, 5, coordinate_axis::r, offset_parity::even, {-1_q, -2_r}});
             STATIC_CHECK(view.size() == 5 * 3);
 
             constexpr auto expected = std::array{
@@ -152,13 +170,18 @@ TEST_CASE("offset_rows_view")
                 vector{-6_q, 0_r},
             };
             STATIC_CHECK(std::ranges::equal(view, expected));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.contains(v); }));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.find(v) != view.end(); }));
+            STATIC_CHECK(std::ranges::all_of(std::views::enumerate(expected),
+                                             [&](auto&& p)
+                                             { return view[std::get<1>(p)] == (std::size_t)std::get<0>(p); }));
         }
     }
     SECTION("s axis")
     {
         SECTION("odd")
         {
-            constexpr auto view = views::offset_rows(coordinate_axis::s, offset_parity::odd, 3, 5, {-1_q, -2_r});
+            constexpr auto view = views::offset_rows({3, 5, coordinate_axis::s, offset_parity::odd, {-1_q, -2_r}});
             STATIC_CHECK(view.size() == 5 * 3);
 
             constexpr auto expected = std::array{
@@ -182,10 +205,15 @@ TEST_CASE("offset_rows_view")
                 vector{2_q, 5_s},
             };
             STATIC_CHECK(std::ranges::equal(view, expected));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.contains(v); }));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.find(v) != view.end(); }));
+            STATIC_CHECK(std::ranges::all_of(std::views::enumerate(expected),
+                                             [&](auto&& p)
+                                             { return view[std::get<1>(p)] == (std::size_t)std::get<0>(p); }));
         }
         SECTION("even")
         {
-            constexpr auto view = views::offset_rows(coordinate_axis::s, offset_parity::even, 3, 5, {-1_q, -2_r});
+            constexpr auto view = views::offset_rows({3, 5, coordinate_axis::s, offset_parity::even, {-1_q, -2_r}});
             STATIC_CHECK(view.size() == 5 * 3);
 
             constexpr auto expected = std::array{
@@ -209,6 +237,11 @@ TEST_CASE("offset_rows_view")
                 vector{2_q, 5_s},
             };
             STATIC_CHECK(std::ranges::equal(view, expected));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.contains(v); }));
+            STATIC_CHECK(std::ranges::all_of(expected, [&](auto&& v) { return view.find(v) != view.end(); }));
+            STATIC_CHECK(std::ranges::all_of(std::views::enumerate(expected),
+                                             [&](auto&& p)
+                                             { return view[std::get<1>(p)] == (std::size_t)std::get<0>(p); }));
         }
     }
 }

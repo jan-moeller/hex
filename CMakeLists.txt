@@ -67,6 +67,7 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/coordinate_axis.hpp
         include/hex/detail/detail_arithmetic.hpp
         include/hex/detail/detail_convex_polygon_iterator.hpp
+        include/hex/detail/detail_generating_random_access_iterator.hpp
         include/hex/detail/detail_grid_iterator.hpp
         include/hex/detail/detail_hexagon_size.hpp
         include/hex/detail/detail_isosceles_trapezoid_size.hpp
@@ -80,6 +81,7 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/hex.hpp
         include/hex/neighbors_view.hpp
         include/hex/offset_parity.hpp
+        include/hex/offset_rows_parameters.hpp
         include/hex/offset_rows_view.hpp
         include/hex/rotation_steps.hpp
         include/hex/vector.hpp

@@ -146,7 +146,7 @@ constexpr auto select_cubic_to_offset_function(coordinate_axis axis,
 template<typename T>
 struct apply_offset_conversion
 {
-    vector<T>   base;           // NOLINT(misc-non-private-member-variables-in-classes)
+    vector<T>   corner;         // NOLINT(misc-non-private-member-variables-in-classes)
     std::size_t width;          // NOLINT(misc-non-private-member-variables-in-classes)
     vector<T> (*convert)(T, T); // NOLINT(misc-non-private-member-variables-in-classes)
 
@@ -154,8 +154,10 @@ struct apply_offset_conversion
     {
         T const x = idx % width;
         T const y = idx / width;
-        return convert(x, y) + base;
+        return convert(x, y) + corner;
     }
+
+    constexpr auto operator==(apply_offset_conversion const&) const -> bool = default;
 };
 } // namespace hex::detail
 
