@@ -90,7 +90,7 @@ if (NOT HEX_TEST_INSTALLED_VERSION)
             $<$<CXX_COMPILER_ID:GNU>:-Wno-maybe-uninitialized> # -Wmaybe-uninitialized has false positives with -O3
             $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
     )
-    target_compile_options(${PROJECT_NAME} INTERFACE
+    target_compile_options(${PROJECT_NAME} PUBLIC
             $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
             $<$<CXX_COMPILER_ID:GNU>:-Wno-maybe-uninitialized> # -Wmaybe-uninitialized has false positives with -O3
             $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
