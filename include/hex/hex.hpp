@@ -26,7 +26,6 @@
 #define HEX_HEX_HPP
 
 // IWYU pragma: begin_exports
-#include "hex/convex_grid_shape.hpp"
 #include "hex/convex_polygon_parameters.hpp"
 #include "hex/convex_polygon_view.hpp"
 #include "hex/coordinate.hpp"

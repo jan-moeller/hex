@@ -21,7 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#include "hex/convex_grid_shape.hpp"
 #include "hex/convex_polygon_view.hpp"
 #include "hex/grid.hpp"
 
@@ -44,10 +43,10 @@ TEST_CASE("grid")
 {
     using namespace literals;
 
-    constexpr convex_grid_shape<int> triangle_shape{make_regular_triangle_parameters(1_q, 0_r, 1_s)};
-    constexpr convex_grid_shape<int> quadrangle_shape{convex_polygon_parameters{-1_q, -1_r, -1_s, 1_q, 0_r, 1_s}};
+    constexpr convex_polygon_view<int> triangle_shape{make_regular_triangle_parameters(1_q, 0_r, 1_s)};
+    constexpr convex_polygon_view<int> quadrangle_shape{convex_polygon_parameters{-1_q, -1_r, -1_s, 1_q, 0_r, 1_s}};
 
-    using convex_grid = grid<int, convex_grid_shape<int>>;
+    using convex_grid = grid<int, convex_polygon_view<int>>;
 
     SECTION("concepts")
     {
