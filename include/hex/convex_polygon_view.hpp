@@ -39,10 +39,8 @@
 
 namespace hex
 {
-// A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::bidirectional_range,
+// A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::random_access_range,
 // std::ranges::borrowed_range and std::constant_range, producing all hex positions in a convex polygon.
-// Note that this is a bit of an odd view: Even though it provides random access via operator[], it is just a
-// bidirectional range. THis is because random access is quite expensive, and additionally comes with some restrictions.
 template<detail::arithmetic T>
 class convex_polygon_view : public std::ranges::view_interface<convex_polygon_view<T>>
 {
@@ -96,13 +94,13 @@ constexpr convex_polygon_view<T>::convex_polygon_view(convex_polygon_parameters<
 template<detail::arithmetic T>
 constexpr auto convex_polygon_view<T>::begin() const noexcept -> detail::convex_polygon_iterator<T>
 {
-    return detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmin(), m_params.smax()));
+    return detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmin(), m_params.smax()), 0UZ);
 }
 template<detail::arithmetic T>
 constexpr auto convex_polygon_view<T>::end() const noexcept -> detail::convex_polygon_iterator<T>
 {
     using namespace literals;
-    return ++detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmax(), m_params.smin()));
+    return ++detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmax(), m_params.smin()), size() - 1);
 }
 
 template<detail::arithmetic T>

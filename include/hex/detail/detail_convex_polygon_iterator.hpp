@@ -27,28 +27,39 @@
 
 #include "hex/convex_polygon_parameters.hpp"
 #include "hex/coordinate.hpp"
+#include "hex/detail/detail_arithmetic.hpp"
+#include "hex/detail/detail_hexagon_size.hpp"
 #include "hex/vector.hpp"
 
+#include <compare>
 #include <iterator>
 
 #include <cassert>
 #include <cstddef>
 
-namespace hex::detail
+namespace hex
+{
+template<detail::arithmetic T>
+class convex_polygon_view;
+
+namespace detail
 {
 template<typename T>
 class convex_polygon_iterator
 {
   public:
-    using value_type        = vector<T>;
+    using value_type        = vector<T> const;
     using difference_type   = std::ptrdiff_t;
-    using iterator_concept  = std::bidirectional_iterator_tag;
+    using iterator_concept  = std::random_access_iterator_tag;
     using iterator_category = std::input_iterator_tag;
 
     constexpr convex_polygon_iterator() = default;
+    constexpr convex_polygon_iterator(convex_polygon_parameters<T> params, std::size_t idx)
+        : convex_polygon_iterator(params, from_index(idx, params), idx)
+    {
+    }
     constexpr convex_polygon_iterator(convex_polygon_parameters<T> params, vector<T> v)
-        : m_params(params)
-        , m_v(v)
+        : convex_polygon_iterator(params, v, to_index(v, params))
     {
     }
 
@@ -63,6 +74,7 @@ class convex_polygon_iterator
             if (m_v.s() > m_params.smax())
                 m_v.set(m_v.q(), m_params.smax());
         }
+        ++m_idx;
         return *this;
     }
     constexpr auto operator++(int) noexcept -> convex_polygon_iterator
@@ -70,6 +82,22 @@ class convex_polygon_iterator
         auto cp = *this;
         ++(*this);
         return cp;
+    }
+    friend constexpr auto operator+(convex_polygon_iterator const& iter,
+                                    difference_type                n) noexcept -> convex_polygon_iterator
+    {
+        return convex_polygon_iterator{iter.m_params, iter.m_idx + n};
+    }
+    friend constexpr auto operator+(difference_type                n,
+                                    convex_polygon_iterator const& iter) noexcept -> convex_polygon_iterator
+    {
+        return iter + n;
+    }
+    constexpr auto operator+=(difference_type n) noexcept -> convex_polygon_iterator&
+    {
+        m_idx += n;
+        m_v = from_index(m_idx, m_params);
+        return *this;
     }
 
     constexpr auto operator--() noexcept -> convex_polygon_iterator&
@@ -83,6 +111,7 @@ class convex_polygon_iterator
             if (m_v.s() < m_params.smin())
                 m_v.set(m_v.q(), m_params.smin());
         }
+        --m_idx;
         return *this;
     }
     constexpr auto operator--(int) noexcept -> convex_polygon_iterator
@@ -91,15 +120,72 @@ class convex_polygon_iterator
         --(*this);
         return cp;
     }
+    friend constexpr auto operator-(convex_polygon_iterator const& iter,
+                                    difference_type                n) noexcept -> convex_polygon_iterator
+    {
+        return convex_polygon_iterator{iter.m_params, iter.m_idx - n};
+    }
+    friend constexpr auto operator-(convex_polygon_iterator const& lhs,
+                                    convex_polygon_iterator const& rhs) noexcept -> difference_type
+    {
+        return lhs.m_idx - rhs.m_idx;
+    }
+    constexpr auto operator-=(difference_type n) noexcept -> convex_polygon_iterator&
+    {
+        m_idx -= n;
+        m_v = from_index(m_idx, m_params);
+        return *this;
+    }
 
     constexpr auto operator*() const noexcept -> vector<T> const // NOLINT(readability-const-return-type)
     {
         return m_v;
     }
 
-    constexpr auto operator==(convex_polygon_iterator const& other) const -> bool = default;
+    // NOLINTNEXTLINE(readability-const-return-type)
+    constexpr auto operator[](difference_type n) const -> value_type { return *(*this + n); }
+
+    friend constexpr auto operator==(convex_polygon_iterator const& lhs, convex_polygon_iterator const& rhs) -> bool
+    {
+        return lhs.m_idx == rhs.m_idx;
+    }
+    friend constexpr auto operator<=>(convex_polygon_iterator const& lhs,
+                                      convex_polygon_iterator const& rhs) -> std::strong_ordering
+    {
+        if (lhs == rhs)
+            return std::strong_ordering::equal;
+        return lhs.m_idx < rhs.m_idx ? std::strong_ordering::less : std::strong_ordering::greater;
+    }
 
   private:
+    constexpr auto from_index(std::size_t idx, convex_polygon_parameters<T> const& params) const noexcept -> vector<T>
+    {
+        auto const [q, r] = detail::index_to_qr(idx,
+                                                params.qmin().value(),
+                                                params.rmin().value(),
+                                                params.smin().value(),
+                                                params.rmax().value(),
+                                                params.smax().value());
+        return vector<T>{q_coordinate<T>{static_cast<T>(q)}, r_coordinate<T>{static_cast<T>(r)}};
+    }
+    constexpr auto to_index(vector<T> const&                    v,
+                            convex_polygon_parameters<T> const& params) const noexcept -> std::size_t
+    {
+        return detail::qr_to_index(v.q().value(),
+                                   v.r().value(),
+                                   params.qmin().value(),
+                                   params.rmin().value(),
+                                   params.smin().value(),
+                                   params.rmax().value(),
+                                   params.smax().value());
+    }
+    constexpr convex_polygon_iterator(convex_polygon_parameters<T> params, vector<T> v, std::size_t idx)
+        : m_params(params)
+        , m_v(v)
+        , m_idx(idx)
+    {
+    }
+
     convex_polygon_parameters<T> m_params{q_coordinate<T>{0},
                                           r_coordinate<T>{0},
                                           s_coordinate<T>{0},
@@ -107,7 +193,11 @@ class convex_polygon_iterator
                                           r_coordinate<T>{0},
                                           s_coordinate<T>{0}};
     vector<T>                    m_v;
+    std::size_t                  m_idx = 0;
+
+    friend class convex_polygon_view<T>;
 };
-} // namespace hex::detail
+} // namespace detail
+} // namespace hex
 
 #endif // DETAIL_BOUNDED_POLYGON_ITERATOR_HPP

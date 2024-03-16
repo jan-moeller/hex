@@ -28,7 +28,6 @@
 #include <catch2/catch_all.hpp>
 
 #include <algorithm>
-#include <iostream>
 #include <iterator>
 #include <ranges>
 
@@ -40,9 +39,9 @@ TEST_CASE("convex_polygon_view")
 
     constexpr convex_polygon_parameters<int> params(-2_q, -1_r, -1_s, 1_q, 2_r, 1_s);
 
-    SECTION("bidirectional range")
+    SECTION("random access range")
     {
-        STATIC_CHECK(std::ranges::bidirectional_range<convex_polygon_view<int>>);
+        STATIC_CHECK(std::ranges::random_access_range<convex_polygon_view<int>>);
         STATIC_CHECK(std::views::reverse(views::convex_polygon(params)).size() == 10);
     }
 

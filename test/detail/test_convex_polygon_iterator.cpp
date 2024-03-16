@@ -44,6 +44,7 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
         STATIC_CHECK(std::input_iterator<convex_polygon_iterator<int>>);
         STATIC_CHECK(std::forward_iterator<convex_polygon_iterator<int>>);
         STATIC_CHECK(std::bidirectional_iterator<convex_polygon_iterator<int>>);
+        STATIC_CHECK(std::random_access_iterator<convex_polygon_iterator<int>>);
     }
 
     SECTION("default constructed must compare equal")
