@@ -31,6 +31,14 @@ TEST_CASE("neighbors_view")
 {
     using namespace literals;
 
+    SECTION("concepts")
+    {
+        STATIC_CHECK(std::ranges::random_access_range<neighbors_view<int>>);
+        STATIC_CHECK(std::ranges::sized_range<neighbors_view<int>>);
+        STATIC_CHECK(std::ranges::constant_range<neighbors_view<int>>);
+        STATIC_CHECK(std::ranges::common_range<neighbors_view<int>>);
+    }
+
     SECTION("neighbors()")
     {
         STATIC_CHECK(std::ranges::size(views::neighbors()) == 6);

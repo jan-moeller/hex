@@ -42,14 +42,16 @@ using neighbors_view = std::ranges::transform_view<std::ranges::ref_view<std::ar
 
 namespace views
 {
-// A range factory returning a random-access view containing the 6 neighbors of the given vector.
+// A range factory returning a view containing the 6 neighbors of the given vector. This view meets the requirements of
+// random_access_range, sized_range, constant_range, and common_range.
 template<std::signed_integral T = int>
 [[nodiscard]] constexpr auto neighbors(vector<T> const& center = {}) -> neighbors_view<T>
 {
     return detail::neighbors | std::views::transform(detail::apply_neighbor<T>{center});
 }
 
-// A range factory returning a random-access view containing the 6 diagonal vectors of the given vector.
+// A range factory returning a view containing the 6 diagonal neighbors of the given vector. This view meets the
+// requirements of random_access_range, sized_range, constant_range, and common_range.
 template<std::signed_integral T = int>
 [[nodiscard]] constexpr auto diagonals(vector<T> const& center = {}) -> neighbors_view<T>
 {

@@ -47,7 +47,7 @@ struct apply_neighbor
 {
     vector<T> center;
 
-    constexpr auto operator()(vector<std::int8_t> v) const -> vector<T> { return center + v; }
+    constexpr auto operator()(vector<std::int8_t> v) const -> vector<T> const { return center + v; }
 };
 } // namespace hex::detail
 
