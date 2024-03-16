@@ -60,30 +60,30 @@ message(STATUS "Build tests:               ${HEX_BUILD_TESTS}")
 # Main target
 #############################################################################################################
 add_library(${PROJECT_NAME} INTERFACE
-        include/hex/convex_polygon_parameters.hpp
-        include/hex/convex_polygon_view.hpp
-        include/hex/coordinate.hpp
-        include/hex/coordinate_axis.hpp
         include/hex/detail/detail_arithmetic.hpp
-        include/hex/detail/detail_convex_polygon_iterator.hpp
         include/hex/detail/detail_generating_random_access_iterator.hpp
-        include/hex/detail/detail_grid_iterator.hpp
-        include/hex/detail/detail_hexagon_size.hpp
-        include/hex/detail/detail_isosceles_trapezoid_size.hpp
         include/hex/detail/detail_narrowing.hpp
-        include/hex/detail/detail_neighbors.hpp
-        include/hex/detail/detail_offset_conversion.hpp
         include/hex/detail/detail_parse_integer_literal.hpp
         include/hex/detail/detail_sqrt.hpp
-        include/hex/detail/detail_vector_iterator.hpp
-        include/hex/grid.hpp
+        include/hex/grid/detail/detail_grid_iterator.hpp
+        include/hex/grid/grid.hpp
         include/hex/hex.hpp
-        include/hex/neighbors_view.hpp
-        include/hex/offset_parity.hpp
-        include/hex/offset_rows_parameters.hpp
-        include/hex/offset_rows_view.hpp
-        include/hex/rotation_steps.hpp
-        include/hex/vector.hpp
+        include/hex/vector/coordinate.hpp
+        include/hex/vector/coordinate_axis.hpp
+        include/hex/vector/detail/detail_vector_iterator.hpp
+        include/hex/vector/rotation_steps.hpp
+        include/hex/vector/vector.hpp
+        include/hex/views/convex_polygon/convex_polygon_parameters.hpp
+        include/hex/views/convex_polygon/convex_polygon_view.hpp
+        include/hex/views/convex_polygon/detail/detail_convex_polygon_iterator.hpp
+        include/hex/views/convex_polygon/detail/detail_hexagon_size.hpp
+        include/hex/views/convex_polygon/detail/detail_isosceles_trapezoid_size.hpp
+        include/hex/views/neighbors/detail/detail_neighbors.hpp
+        include/hex/views/neighbors/neighbors_view.hpp
+        include/hex/views/offset_rows/detail/detail_offset_conversion.hpp
+        include/hex/views/offset_rows/offset_parity.hpp
+        include/hex/views/offset_rows/offset_rows_parameters.hpp
+        include/hex/views/offset_rows/offset_rows_view.hpp
 )
 target_include_directories(${PROJECT_NAME}
         INTERFACE

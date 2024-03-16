@@ -22,20 +22,33 @@
 // SOFTWARE.
 //
 
-#ifndef HEX_HEX_HPP
-#define HEX_HEX_HPP
+#ifndef HEX_DETAIL_NEIGHBORS_HPP
+#define HEX_DETAIL_NEIGHBORS_HPP
 
-// IWYU pragma: begin_exports
-#include "hex/grid/grid.hpp"
-#include "hex/vector/coordinate.hpp"
-#include "hex/vector/coordinate_axis.hpp"
-#include "hex/vector/rotation_steps.hpp"
 #include "hex/vector/vector.hpp"
-#include "hex/views/convex_polygon/convex_polygon_parameters.hpp"
-#include "hex/views/convex_polygon/convex_polygon_view.hpp"
-#include "hex/views/neighbors/neighbors_view.hpp"
-#include "hex/views/offset_rows/offset_parity.hpp"
-#include "hex/views/offset_rows/offset_rows_view.hpp"
-// IWYU pragma: end_exports
 
-#endif // HEX_HEX_HPP
+#include <array>
+
+#include <cstdint>
+
+namespace hex::detail
+{
+inline constexpr std::array<vector<std::int8_t>, 6> neighbors{unit_qs, unit_qr, unit_sr, unit_sq, unit_rq, unit_rs};
+
+inline constexpr std::array<vector<std::int8_t>, 6> diagonals{diag_q,
+                                                              coordinate_cast<std::int8_t>(-diag_r),
+                                                              diag_s,
+                                                              coordinate_cast<std::int8_t>(-diag_q),
+                                                              diag_r,
+                                                              coordinate_cast<std::int8_t>(-diag_s)};
+
+template<typename T>
+struct apply_neighbor
+{
+    vector<T> center;
+
+    constexpr auto operator()(vector<std::int8_t> v) const -> vector<T> const { return center + v; }
+};
+} // namespace hex::detail
+
+#endif // HEX_DETAIL_NEIGHBORS_HPP

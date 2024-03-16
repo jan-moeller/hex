@@ -62,18 +62,19 @@ endif ()
 #############################################################################################################
 
 add_executable(${PROJECT_NAME}
-        detail/test_convex_polygon_iterator.cpp
-        detail/test_hexagon_size.cpp
-        detail/test_isosceles_trapezoid_size.cpp
-        detail/test_offset_conversion.cpp
-        detail/test_sqrt.cpp
-        test_convex_polygon_parameters.cpp
-        test_convex_polygon_view.cpp
-        test_coordinate.cpp
-        test_grid.cpp
-        test_neighbors_view.cpp
-        test_offset_rows_view.cpp
-        test_vector.cpp
+        src/detail/test_sqrt.cpp
+        src/grid/test_grid.cpp
+        src/vector/test_coordinate.cpp
+        src/vector/test_vector.cpp
+        src/views/convex_polygon/detail/test_convex_polygon_iterator.cpp
+        src/views/convex_polygon/detail/test_hexagon_size.cpp
+        src/views/convex_polygon/detail/test_isosceles_trapezoid_size.cpp
+        src/views/convex_polygon/test_convex_polygon_parameters.cpp
+        src/views/convex_polygon/test_convex_polygon_view.cpp
+        src/views/neighbors/test_neighbors_view.cpp
+        src/views/offset_rows/detail/test_offset_conversion.cpp
+        src/views/offset_rows/test_offset_rows_view.cpp
+        src/vector/test_vector.cpp
 )
 target_link_libraries(${PROJECT_NAME} Catch2::Catch2WithMain ${LIB_UNDER_TEST}::${LIB_UNDER_TEST})
 
