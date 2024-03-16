@@ -45,7 +45,7 @@ namespace hex
 template<class T>
 concept grid_shape = std::ranges::sized_range<T> && std::ranges::common_range<T> && std::ranges::bidirectional_range<T>
                      && requires(T t, std::ranges::range_value_t<T> v) { // clang-format off: requires on single line
-                            { t.index_of(v) } -> std::convertible_to<std::size_t>; // clang-format on
+                            { t[v] } -> std::convertible_to<std::size_t>; // clang-format on
                         };
 
 // A fixed-size associative container mapping hex positions to user-defined data. All storage is contiguous, and
@@ -261,22 +261,22 @@ constexpr grid<T, Shape, Allocator>::grid(std::from_range_t, R&& rg, Allocator c
 template<typename T, grid_shape Shape, class Allocator>
 constexpr auto grid<T, Shape, Allocator>::operator[](key_type const& key) -> T&
 {
-    return m_data[m_shape.index_of(key)];
+    return m_data[m_shape[key]];
 }
 template<typename T, grid_shape Shape, class Allocator>
 constexpr auto grid<T, Shape, Allocator>::operator[](key_type&& key) -> T&
 {
-    return m_data[m_shape.index_of(std::move(key))];
+    return m_data[m_shape[std::move(key)]];
 }
 template<typename T, grid_shape Shape, class Allocator>
 constexpr auto grid<T, Shape, Allocator>::operator[](key_type const& key) const -> T const&
 {
-    return m_data[m_shape.index_of(key)];
+    return m_data[m_shape[key]];
 }
 template<typename T, grid_shape Shape, class Allocator>
 constexpr auto grid<T, Shape, Allocator>::operator[](key_type&& key) const -> T const&
 {
-    return m_data[m_shape.index_of(std::move(key))];
+    return m_data[m_shape[std::move(key)]];
 }
 template<typename T, grid_shape Shape, class Allocator>
 constexpr auto grid<T, Shape, Allocator>::at(key_type const& key) -> T&
