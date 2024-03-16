@@ -25,7 +25,6 @@
 #ifndef HEX_NEIGHBORS_VIEW_HPP
 #define HEX_NEIGHBORS_VIEW_HPP
 
-#include "hex/detail/detail_arithmetic.hpp"
 #include "hex/detail/detail_neighbors.hpp"
 #include "hex/vector.hpp"
 
@@ -37,7 +36,7 @@
 
 namespace hex
 {
-template<detail::arithmetic T> // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+template<std::signed_integral T> // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 using neighbors_view = std::ranges::transform_view<std::ranges::ref_view<std::array<vector<std::int8_t>, 6> const>,
                                                    detail::apply_neighbor<T>>;
 
