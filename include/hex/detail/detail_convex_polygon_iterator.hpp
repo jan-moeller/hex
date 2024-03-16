@@ -26,11 +26,12 @@
 #define DETAIL_BOUNDED_POLYGON_ITERATOR_HPP
 
 #include "hex/convex_polygon_parameters.hpp"
+#include "hex/coordinate.hpp"
 #include "hex/vector.hpp"
 
 #include <iterator>
-#include <optional>
 
+#include <cassert>
 #include <cstddef>
 
 namespace hex::detail
@@ -54,13 +55,13 @@ class convex_polygon_iterator
     constexpr auto operator++() noexcept -> convex_polygon_iterator&
     {
         using namespace literals;
-        if (m_v.r() < m_params->rmax() && m_v.s() > m_params->smin())
+        if (m_v.r() < m_params.rmax() && m_v.s() > m_params.smin())
             m_v.set(m_v.q(), m_v.r() + 1_r);
         else
         {
-            m_v.set(m_v.q() + 1_q, m_params->rmin());
-            if (m_v.s() > m_params->smax())
-                m_v.set(m_v.q(), m_params->smax());
+            m_v.set(m_v.q() + 1_q, m_params.rmin());
+            if (m_v.s() > m_params.smax())
+                m_v.set(m_v.q(), m_params.smax());
         }
         return *this;
     }
@@ -74,13 +75,13 @@ class convex_polygon_iterator
     constexpr auto operator--() noexcept -> convex_polygon_iterator&
     {
         using namespace literals;
-        if (m_v.r() > m_params->rmin() && m_v.s() < m_params->smax())
+        if (m_v.r() > m_params.rmin() && m_v.s() < m_params.smax())
             m_v.set(m_v.q(), m_v.r() - 1_r);
         else
         {
-            m_v.set(m_v.q() - 1_q, m_params->rmax());
-            if (m_v.s() < m_params->smin())
-                m_v.set(m_v.q(), m_params->smin());
+            m_v.set(m_v.q() - 1_q, m_params.rmax());
+            if (m_v.s() < m_params.smin())
+                m_v.set(m_v.q(), m_params.smin());
         }
         return *this;
     }
@@ -96,17 +97,16 @@ class convex_polygon_iterator
         return m_v;
     }
 
-    constexpr auto operator==(convex_polygon_iterator const& other) const -> bool
-    {
-        return (!m_params.has_value() && !other.m_params.has_value())
-               || (!m_params.has_value() && !other.m_params->contains(other.m_v))
-               || (!other.m_params.has_value() && !m_params->contains(m_v))
-               || (m_params == other.m_params && m_v == other.m_v);
-    }
+    constexpr auto operator==(convex_polygon_iterator const& other) const -> bool = default;
 
   private:
-    std::optional<convex_polygon_parameters<T>> m_params;
-    vector<T>                                   m_v;
+    convex_polygon_parameters<T> m_params{q_coordinate<T>{0},
+                                          r_coordinate<T>{0},
+                                          s_coordinate<T>{0},
+                                          q_coordinate<T>{0},
+                                          r_coordinate<T>{0},
+                                          s_coordinate<T>{0}};
+    vector<T>                    m_v;
 };
 } // namespace hex::detail
 

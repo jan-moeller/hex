@@ -26,8 +26,10 @@
 #define HEX_CONVEX_POLYGON_VIEW_HPP
 
 #include "hex/convex_polygon_parameters.hpp"
+#include "hex/coordinate.hpp"
 #include "hex/detail/detail_arithmetic.hpp"
 #include "hex/detail/detail_convex_polygon_iterator.hpp"
+#include "hex/detail/detail_hexagon_size.hpp"
 #include "hex/vector.hpp"
 
 #include <concepts>
@@ -39,6 +41,8 @@ namespace hex
 {
 // A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::bidirectional_range,
 // std::ranges::borrowed_range and std::constant_range, producing all hex positions in a convex polygon.
+// Note that this is a bit of an odd view: Even though it provides random access via operator[], it is just a
+// bidirectional range. THis is because random access is quite expensive, and additionally comes with some restrictions.
 template<detail::arithmetic T>
 class convex_polygon_view : public std::ranges::view_interface<convex_polygon_view<T>>
 {
@@ -53,11 +57,22 @@ class convex_polygon_view : public std::ranges::view_interface<convex_polygon_vi
 
     // Returns true if the given element is in the range, otherwise false. O(1).
     [[nodiscard]] constexpr auto contains(vector<T> const& v) const noexcept -> bool;
+    // Returns an iterator to the given element if it is in the range, otherwise end().
+    [[nodiscard]] constexpr auto find(vector<T> const& v) const noexcept -> detail::convex_polygon_iterator<T>;
+
+    // Returns the element at the specified index. Note that this operation, while O(1), has a fairly large constant
+    // factor. Results are correct as long as max(q_max-q_min, r_max-r_min, s_max-s_min) <= 2^31 − 1. UB if the given
+    // index is out of range.
+    [[nodiscard]] constexpr auto operator[](std::size_t idx) const noexcept -> vector<T>;
+    // Returns the index of the given element. Note that this operation, while O(1), has a fairly large constant
+    // factor. Results are correct as long as max(q_max-q_min, r_max-r_min, s_max-s_min) <= 2^31 − 1. UB if the given
+    // element is out of range.
+    [[nodiscard]] constexpr auto operator[](vector<T> const& v) const noexcept -> std::size_t;
 
     // Retrieves the parameters used for construction.
     [[nodiscard]] constexpr auto parameters() const noexcept -> convex_polygon_parameters<T> const&;
 
-    [[nodiscard]] constexpr auto operator==(convex_polygon_view const&) const -> bool;
+    [[nodiscard]] constexpr auto operator==(convex_polygon_view const& other) const -> bool;
 
   private:
     convex_polygon_parameters<T> m_params;
@@ -100,6 +115,38 @@ template<detail::arithmetic T>
 constexpr auto convex_polygon_view<T>::contains(vector<T> const& v) const noexcept -> bool
 {
     return m_params.contains(v);
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::find(vector<T> const& v) const noexcept -> detail::convex_polygon_iterator<T>
+{
+    if (!contains(v))
+        return end();
+    return detail::convex_polygon_iterator<T>(m_params, v);
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::operator[](std::size_t idx) const noexcept -> vector<T>
+{
+    auto const [q, r] = detail::index_to_qr(idx,
+                                            m_params.qmin().value(),
+                                            m_params.rmin().value(),
+                                            m_params.smin().value(),
+                                            m_params.rmax().value(),
+                                            m_params.smax().value());
+    return vector(q_coordinate<T>{q}, r_coordinate<T>{r});
+}
+
+template<detail::arithmetic T>
+constexpr auto convex_polygon_view<T>::operator[](vector<T> const& v) const noexcept -> std::size_t
+{
+    return detail::qr_to_index(v.q().value(),
+                               v.r().value(),
+                               m_params.qmin().value(),
+                               m_params.rmin().value(),
+                               m_params.smin().value(),
+                               m_params.rmax().value(),
+                               m_params.smax().value());
 }
 
 template<detail::arithmetic T>

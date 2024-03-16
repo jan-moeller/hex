@@ -56,13 +56,7 @@ constexpr convex_grid_shape<T>::convex_grid_shape(convex_polygon_parameters<T> p
 template<detail::arithmetic T>
 constexpr auto convex_grid_shape<T>::index_of(vector<T> v) const -> std::size_t
 {
-    return detail::qr_to_index(v.q().value(),
-                               v.r().value(),
-                               convex_polygon_view<T>::parameters().qmin().value(),
-                               convex_polygon_view<T>::parameters().rmin().value(),
-                               convex_polygon_view<T>::parameters().smin().value(),
-                               convex_polygon_view<T>::parameters().rmax().value(),
-                               convex_polygon_view<T>::parameters().smax().value());
+    return (*this)[v];
 }
 
 } // namespace hex

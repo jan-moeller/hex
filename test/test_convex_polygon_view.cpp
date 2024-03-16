@@ -60,7 +60,11 @@ TEST_CASE("convex_polygon_view")
     SECTION("borrowed range")
     {
         STATIC_CHECK(std::ranges::borrowed_range<convex_polygon_view<int>>);
-        STATIC_CHECK(*[&]{return views::convex_polygon(params).begin();}() == vector{-2_q, 1_r});
+        STATIC_CHECK(*[&]
+                     {
+                         return views::convex_polygon(params).begin();
+                     }()
+                     == vector{-2_q, 1_r});
     }
 
     SECTION("constant range")
@@ -85,8 +89,9 @@ TEST_CASE("convex_polygon_view")
             == 7);
     }
 
-    SECTION("default constructed iterator compares equal to end()")
+    SECTION("default constructed iterator compares equal to itself")
     {
-        STATIC_CHECK(views::convex_polygon(params).end() == std::ranges::const_iterator_t<convex_polygon_view<int>>());
+        STATIC_CHECK(std::ranges::const_iterator_t<convex_polygon_view<int>>()
+                     == std::ranges::const_iterator_t<convex_polygon_view<int>>());
     }
 }

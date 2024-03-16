@@ -79,10 +79,9 @@ TEST_CASE("convex_polygon_iterator", "[detail]")
         CHECK(*iter == vector{-1_q, 0_r});
     }
 
-    SECTION("default constructed iterator compares equal to end")
+    SECTION("default constructed iterator compares equal to itself")
     {
-        auto end = ++convex_polygon_iterator<int>({-2_q, -1_r, -1_s, 1_q, 2_r, 1_s}, vector{1_q, -1_s});
-        CHECK(end == convex_polygon_iterator<int>());
+        STATIC_CHECK(convex_polygon_iterator<int>() == convex_polygon_iterator<int>());
     }
 
     SECTION("iterates the expected elements")
