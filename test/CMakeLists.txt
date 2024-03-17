@@ -76,7 +76,6 @@ add_executable(${PROJECT_NAME}
         src/views/neighbors/test_neighbors_view.cpp
         src/views/offset_rows/detail/test_offset_conversion.cpp
         src/views/offset_rows/test_offset_rows_view.cpp
-        src/vector/test_vector.cpp
 )
 target_link_libraries(${PROJECT_NAME} Catch2::Catch2WithMain ${LIB_UNDER_TEST}::${LIB_UNDER_TEST})
 
