@@ -39,7 +39,7 @@
 
 namespace hex
 {
-template<detail::arithmetic T>
+template<std::signed_integral>
 class convex_polygon_view;
 
 namespace detail

@@ -41,7 +41,7 @@ namespace hex
 {
 // A view that models std::ranges::sized_range, std::ranges::common_range, std::ranges::random_access_range,
 // std::ranges::borrowed_range and std::constant_range, producing all hex positions in a convex polygon.
-template<detail::arithmetic T>
+template<std::signed_integral T>
 class convex_polygon_view : public std::ranges::view_interface<convex_polygon_view<T>>
 {
   public:
@@ -85,37 +85,37 @@ template<std::signed_integral T = int>
 
 // ------------------------------ implementation below ------------------------------
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr convex_polygon_view<T>::convex_polygon_view(convex_polygon_parameters<T> const& params)
     : m_params(params)
 {
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::begin() const noexcept -> detail::convex_polygon_iterator<T>
 {
     return detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmin(), m_params.smax()), 0UZ);
 }
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::end() const noexcept -> detail::convex_polygon_iterator<T>
 {
     using namespace literals;
     return ++detail::convex_polygon_iterator<T>(m_params, vector(m_params.qmax(), m_params.smin()), size() - 1);
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::size() const noexcept -> std::size_t
 {
     return m_params.count();
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::contains(vector<T> const& v) const noexcept -> bool
 {
     return m_params.contains(v);
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::find(vector<T> const& v) const noexcept -> detail::convex_polygon_iterator<T>
 {
     if (!contains(v))
@@ -123,7 +123,7 @@ constexpr auto convex_polygon_view<T>::find(vector<T> const& v) const noexcept -
     return detail::convex_polygon_iterator<T>(m_params, v);
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::operator[](std::size_t idx) const noexcept -> vector<T>
 {
     auto const [q, r] = detail::index_to_qr(idx,
@@ -135,7 +135,7 @@ constexpr auto convex_polygon_view<T>::operator[](std::size_t idx) const noexcep
     return vector(q_coordinate<T>{q}, r_coordinate<T>{r});
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::operator[](vector<T> const& v) const noexcept -> std::size_t
 {
     return detail::qr_to_index(v.q().value(),
@@ -147,13 +147,13 @@ constexpr auto convex_polygon_view<T>::operator[](vector<T> const& v) const noex
                                m_params.smax().value());
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::parameters() const noexcept -> convex_polygon_parameters<T> const&
 {
     return m_params;
 }
 
-template<detail::arithmetic T>
+template<std::signed_integral T>
 constexpr auto convex_polygon_view<T>::operator==(convex_polygon_view const& other) const -> bool
 {
     return m_params == other.m_params;
@@ -167,7 +167,7 @@ constexpr auto views::convex_polygon(convex_polygon_parameters<T> const& params)
 
 } // namespace hex
 
-template<hex::detail::arithmetic T>
+template<std::signed_integral T>
 inline constexpr bool std::ranges::enable_borrowed_range<hex::convex_polygon_view<T>> = true;
 
 #endif // HEX_CONVEX_POLYGON_VIEW_HPP
