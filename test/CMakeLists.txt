@@ -71,6 +71,8 @@ add_executable(${PROJECT_NAME}
         src/views/convex_polygon/detail/test_isosceles_trapezoid_size.cpp
         src/views/convex_polygon/test_convex_polygon_parameters.cpp
         src/views/convex_polygon/test_convex_polygon_view.cpp
+        src/views/line/detail/test_line_iterator.cpp
+        src/views/line/test_line_view.cpp
         src/views/neighbors/test_neighbors_view.cpp
         src/views/offset_rows/detail/test_offset_conversion.cpp
         src/views/offset_rows/test_offset_rows_view.cpp

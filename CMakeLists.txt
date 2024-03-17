@@ -78,6 +78,8 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/views/convex_polygon/detail/detail_convex_polygon_iterator.hpp
         include/hex/views/convex_polygon/detail/detail_hexagon_size.hpp
         include/hex/views/convex_polygon/detail/detail_isosceles_trapezoid_size.hpp
+        include/hex/views/line/detail/detail_line_iterator.hpp
+        include/hex/views/line/line_view.hpp
         include/hex/views/neighbors/detail/detail_neighbors.hpp
         include/hex/views/neighbors/neighbors_view.hpp
         include/hex/views/offset_rows/detail/detail_offset_conversion.hpp
