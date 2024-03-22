@@ -151,6 +151,27 @@ template<char... Digits>
 // the given value from the following list: int, long int, long long int.
 template<char... Digits>
 [[nodiscard]] constexpr auto operator""_s() noexcept;
+
+// Floating point literal of a q coordinate of underlying type float.
+[[nodiscard]] constexpr auto operator""_qf(long double) noexcept -> q_coordinate<float>;
+// Floating point literal of a q coordinate of underlying type double.
+[[nodiscard]] constexpr auto operator""_q(long double) noexcept -> q_coordinate<double>;
+// Floating point literal of a q coordinate of underlying type long double.
+[[nodiscard]] constexpr auto operator""_ql(long double) noexcept -> q_coordinate<long double>;
+
+// Floating point literal of a r coordinate of underlying type float.
+[[nodiscard]] constexpr auto operator""_rf(long double) noexcept -> r_coordinate<float>;
+// Floating point literal of a r coordinate of underlying type double.
+[[nodiscard]] constexpr auto operator""_r(long double) noexcept -> r_coordinate<double>;
+// Floating point literal of a r coordinate of underlying type long double.
+[[nodiscard]] constexpr auto operator""_rl(long double) noexcept -> r_coordinate<long double>;
+
+// Floating point literal of a s coordinate of underlying type float.
+[[nodiscard]] constexpr auto operator""_sf(long double) noexcept -> s_coordinate<float>;
+// Floating point literal of a s coordinate of underlying type double.
+[[nodiscard]] constexpr auto operator""_s(long double) noexcept -> s_coordinate<double>;
+// Floating point literal of a s coordinate of underlying type long double.
+[[nodiscard]] constexpr auto operator""_sl(long double) noexcept -> s_coordinate<long double>;
 } // namespace literals
 
 // ------------------------------ implementation below ------------------------------
@@ -288,6 +309,43 @@ constexpr auto operator""_s() noexcept
 {
     static constexpr auto num = detail::parse_integer_literal<Digits...>();
     return s_coordinate{num};
+}
+
+constexpr auto operator""_qf(long double n) noexcept -> q_coordinate<float>
+{
+    return q_coordinate<float>(n);
+}
+constexpr auto operator""_q(long double n) noexcept -> q_coordinate<double>
+{
+    return q_coordinate<double>(n);
+}
+constexpr auto operator""_ql(long double n) noexcept -> q_coordinate<long double>
+{
+    return q_coordinate<long double>(n);
+}
+constexpr auto operator""_rf(long double n) noexcept -> r_coordinate<float>
+{
+    return r_coordinate<float>(n);
+}
+constexpr auto operator""_r(long double n) noexcept -> r_coordinate<double>
+{
+    return r_coordinate<double>(n);
+}
+constexpr auto operator""_rl(long double n) noexcept -> r_coordinate<long double>
+{
+    return r_coordinate<long double>(n);
+}
+constexpr auto operator""_sf(long double n) noexcept -> s_coordinate<float>
+{
+    return s_coordinate<float>(n);
+}
+constexpr auto operator""_s(long double n) noexcept -> s_coordinate<double>
+{
+    return s_coordinate<double>(n);
+}
+constexpr auto operator""_sl(long double n) noexcept -> s_coordinate<long double>
+{
+    return s_coordinate<long double>(n);
 }
 } // namespace literals
 } // namespace hex
