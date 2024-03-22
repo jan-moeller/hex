@@ -94,34 +94,34 @@ coordinate(T) -> coordinate<Axis, T>;
 
 // Sums two coordinates.
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator+(coordinate<Axis, Lhs> const& lhs, coordinate<Axis, Rhs> const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} + Rhs{})>;
+[[nodiscard]] constexpr auto operator+(coordinate<Axis, Lhs> const& lhs,
+                                       coordinate<Axis, Rhs> const& rhs) -> coordinate<Axis, decltype(Lhs{} + Rhs{})>;
 
 // Subtracts a coordinate from another.
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator-(coordinate<Axis, Lhs> const& lhs, coordinate<Axis, Rhs> const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} - Rhs{})>;
+[[nodiscard]] constexpr auto operator-(coordinate<Axis, Lhs> const& lhs,
+                                       coordinate<Axis, Rhs> const& rhs) -> coordinate<Axis, decltype(Lhs{} - Rhs{})>;
 
 // Multiplies a coordinate by a factor.
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator*(coordinate<Axis, Lhs> const& lhs, Rhs const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} * Rhs{})>;
+[[nodiscard]] constexpr auto operator*(coordinate<Axis, Lhs> const& lhs,
+                                       Rhs const&                   rhs) -> coordinate<Axis, decltype(Lhs{} * Rhs{})>;
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator*(Lhs const& lhs, coordinate<Axis, Rhs> const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} * Rhs{})>;
+[[nodiscard]] constexpr auto operator*(Lhs const&                   lhs,
+                                       coordinate<Axis, Rhs> const& rhs) -> coordinate<Axis, decltype(Lhs{} * Rhs{})>;
 
 // Divides a coordinate by a factor.
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator/(coordinate<Axis, Lhs> const& lhs, Rhs const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} / Rhs{})>;
+[[nodiscard]] constexpr auto operator/(coordinate<Axis, Lhs> const& lhs,
+                                       Rhs const&                   rhs) -> coordinate<Axis, decltype(Lhs{} / Rhs{})>;
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator/(Lhs const& lhs, coordinate<Axis, Rhs> const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} / Rhs{})>;
+[[nodiscard]] constexpr auto operator/(Lhs const&                   lhs,
+                                       coordinate<Axis, Rhs> const& rhs) -> coordinate<Axis, decltype(Lhs{} / Rhs{})>;
 
 // Computes the remainder of a coordinate and factor.
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator%(coordinate<Axis, Lhs> const& lhs, Rhs const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} % Rhs{})>
+[[nodiscard]] constexpr auto operator%(coordinate<Axis, Lhs> const& lhs,
+                                       Rhs const&                   rhs) -> coordinate<Axis, decltype(Lhs{} % Rhs{})>
     requires requires { Lhs{} % Rhs{}; };
 
 // Cast the coordinate to the given underlying type T.
@@ -220,14 +220,14 @@ constexpr auto coordinate<Axis, T>::operator-() const -> coordinate<Axis, declty
     return coordinate<Axis, decltype(-m_value)>{-m_value};
 }
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-constexpr auto operator+(coordinate<Axis, Lhs> const& lhs, coordinate<Axis, Rhs> const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} + Rhs{})>
+constexpr auto operator+(coordinate<Axis, Lhs> const& lhs,
+                         coordinate<Axis, Rhs> const& rhs) -> coordinate<Axis, decltype(Lhs{} + Rhs{})>
 {
     return coordinate<Axis, decltype(Lhs{} + Rhs{})>{lhs.value() + rhs.value()};
 }
 template<coordinate_axis Axis, typename Lhs, typename Rhs>
-constexpr auto operator-(coordinate<Axis, Lhs> const& lhs, coordinate<Axis, Rhs> const& rhs)
-    -> coordinate<Axis, decltype(Lhs{} - Rhs{})>
+constexpr auto operator-(coordinate<Axis, Lhs> const& lhs,
+                         coordinate<Axis, Rhs> const& rhs) -> coordinate<Axis, decltype(Lhs{} - Rhs{})>
 {
     return coordinate<Axis, decltype(Lhs{} - Rhs{})>{lhs.value() - rhs.value()};
 }
