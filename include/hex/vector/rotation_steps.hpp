@@ -113,6 +113,18 @@ constexpr auto operator-(rotation_steps const& lhs, rotation_steps const& rhs) -
 {
     return rotation_steps(static_cast<std::int8_t>(lhs.clockwise_steps() - rhs.clockwise_steps()));
 }
+
+inline constexpr rotation_steps rot_0       = rotation_steps(0);
+inline constexpr rotation_steps rot_60_cw   = rotation_steps(1);
+inline constexpr rotation_steps rot_120_cw  = rotation_steps(2);
+inline constexpr rotation_steps rot_180_cw  = rotation_steps(3);
+inline constexpr rotation_steps rot_240_cw  = rotation_steps(4);
+inline constexpr rotation_steps rot_300_cw  = rotation_steps(5);
+inline constexpr rotation_steps rot_60_ccw  = rotation_steps(-1);
+inline constexpr rotation_steps rot_120_ccw = rotation_steps(-2);
+inline constexpr rotation_steps rot_180_ccw = rotation_steps(-3);
+inline constexpr rotation_steps rot_240_ccw = rotation_steps(-4);
+inline constexpr rotation_steps rot_300_ccw = rotation_steps(-5);
 } // namespace hex
 
 #endif // HEX_ROTATION_STEPS_HPP
