@@ -25,6 +25,8 @@
 #ifndef HEX_ROTATION_STEPS_HPP
 #define HEX_ROTATION_STEPS_HPP
 
+#include <compare>
+
 #include <cstdint>
 
 namespace hex
