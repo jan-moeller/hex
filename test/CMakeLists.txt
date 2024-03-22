@@ -65,6 +65,7 @@ add_executable(${PROJECT_NAME}
         src/detail/test_sqrt.cpp
         src/grid/test_grid.cpp
         src/vector/test_coordinate.cpp
+        src/vector/test_transformation.cpp
         src/vector/test_vector.cpp
         src/views/convex_polygon/detail/test_convex_polygon_iterator.cpp
         src/views/convex_polygon/detail/test_hexagon_size.cpp

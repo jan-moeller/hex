@@ -70,8 +70,15 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/hex.hpp
         include/hex/vector/coordinate.hpp
         include/hex/vector/coordinate_axis.hpp
+        include/hex/vector/detail/detail_transformation_utils.hpp
         include/hex/vector/detail/detail_vector_iterator.hpp
+        include/hex/vector/reflection.hpp
+        include/hex/vector/rotation.hpp
         include/hex/vector/rotation_steps.hpp
+        include/hex/vector/scaling.hpp
+        include/hex/vector/shearing.hpp
+        include/hex/vector/transformation.hpp
+        include/hex/vector/translation.hpp
         include/hex/vector/vector.hpp
         include/hex/views/convex_polygon/convex_polygon_parameters.hpp
         include/hex/views/convex_polygon/convex_polygon_view.hpp
