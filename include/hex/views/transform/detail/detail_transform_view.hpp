@@ -22,27 +22,25 @@
 // SOFTWARE.
 //
 
-#ifndef HEX_HEX_HPP
-#define HEX_HEX_HPP
+#ifndef HEX_DETAIL_TRANSFORM_VIEW_HPP
+#define HEX_DETAIL_TRANSFORM_VIEW_HPP
 
-// IWYU pragma: begin_exports
-#include "hex/grid/grid.hpp"
-#include "hex/vector/coordinate.hpp"
-#include "hex/vector/coordinate_axis.hpp"
-#include "hex/vector/reflection.hpp"
-#include "hex/vector/rotation.hpp"
-#include "hex/vector/rotation_steps.hpp"
-#include "hex/vector/scaling.hpp"
-#include "hex/vector/shearing.hpp"
 #include "hex/vector/transformation.hpp"
-#include "hex/vector/translation.hpp"
 #include "hex/vector/vector.hpp"
-#include "hex/views/convex_polygon/convex_polygon_parameters.hpp"
-#include "hex/views/convex_polygon/convex_polygon_view.hpp"
-#include "hex/views/neighbors/neighbors_view.hpp"
-#include "hex/views/offset_rows/offset_parity.hpp"
-#include "hex/views/offset_rows/offset_rows_view.hpp"
-#include "hex/views/transform/transform_view.hpp"
-// IWYU pragma: end_exports
 
-#endif // HEX_HEX_HPP
+namespace hex::detail
+{
+template<typename T>
+struct apply_transformation
+{
+    transformation<T> transform;
+
+    template<typename U>
+    constexpr auto operator()(vector<U> v) const
+    {
+        return hex::transform(v, transform);
+    }
+};
+} // namespace hex::detail
+
+#endif // HEX_DETAIL_TRANSFORM_VIEW_HPP

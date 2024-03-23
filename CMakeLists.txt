@@ -93,6 +93,8 @@ add_library(${PROJECT_NAME} INTERFACE
         include/hex/views/offset_rows/offset_parity.hpp
         include/hex/views/offset_rows/offset_rows_parameters.hpp
         include/hex/views/offset_rows/offset_rows_view.hpp
+        include/hex/views/transform/detail/detail_transform_view.hpp
+        include/hex/views/transform/transform_view.hpp
 )
 target_include_directories(${PROJECT_NAME}
         INTERFACE
