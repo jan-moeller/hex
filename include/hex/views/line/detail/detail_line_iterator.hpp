@@ -166,7 +166,7 @@ class line_iterator
     constexpr auto operator==(line_iterator const& other) const -> bool { return m_remaining == other.m_remaining; };
 
   private:
-    std::size_t m_remaining = 0;
+    std::size_t m_remaining = -1;
     T           m_dq;
     T           m_dr;
     T           m_q;

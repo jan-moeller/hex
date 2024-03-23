@@ -85,7 +85,7 @@ constexpr auto hex::line_view<T>::end() const noexcept -> hex::detail::line_iter
 template<std::signed_integral T>
 constexpr auto hex::line_view<T>::size() const noexcept -> std::size_t
 {
-    return distance(m_from, m_to);
+    return distance(m_from, m_to) + 1;
 }
 
 template<std::signed_integral T>

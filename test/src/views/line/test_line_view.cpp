@@ -53,7 +53,7 @@ TEST_CASE("line_view")
         vector<int> const to   = GENERATE(vector{0_q, 0_r}, vector{-1_q, 0_r}, vector{1_q, 0_r}, vector{42_q, 999_r});
 
         CHECK((std::size_t)std::ranges::distance(views::line(from, to)) == views::line(from, to).size());
-        CHECK(std::ranges::distance(views::line(from, to)) == distance(from, to));
+        CHECK(std::ranges::distance(views::line(from, to)) == distance(from, to) + 1);
     }
 
     SECTION("content")
