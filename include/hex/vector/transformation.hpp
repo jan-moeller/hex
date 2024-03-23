@@ -94,6 +94,30 @@ constexpr auto combine(transformation<T> const& t,
 // Applies a transformation to a vector, returning the transformed vector.
 template<detail::arithmetic T, detail::arithmetic U>
 constexpr auto transform(vector<T> const& v, transformation<U> const& t) -> vector<std::common_type_t<T, U>>;
+
+// Applies a reflection transformation to a vector, returning the transformed vector.
+template<detail::arithmetic T>
+constexpr auto transform(vector<T> const& v, reflection const& t) -> vector<T>;
+
+// Applies a rotation transformation to a vector, returning the transformed vector.
+template<detail::arithmetic T, std::floating_point U>
+constexpr auto transform(vector<T> const& v, rotation<U> const& t) -> vector<std::common_type_t<T, U>>;
+
+// Applies a rotation transformation to a vector, returning the transformed vector.
+template<detail::arithmetic T>
+constexpr auto transform(vector<T> const& v, rotation_steps const& t) -> vector<T>;
+
+// Applies a scaling transformation to a vector, returning the transformed vector.
+template<detail::arithmetic T, detail::arithmetic U>
+constexpr auto transform(vector<T> const& v, scaling<U> const& t) -> vector<std::common_type_t<T, U>>;
+
+// Applies a shearing transformation to a vector, returning the transformed vector.
+template<detail::arithmetic T, detail::arithmetic U>
+constexpr auto transform(vector<T> const& v, shearing<U> const& t) -> vector<std::common_type_t<T, U>>;
+
+// Applies a translation transformation to a vector, returning the transformed vector.
+template<detail::arithmetic T, detail::arithmetic U>
+constexpr auto transform(vector<T> const& v, translation<U> const& t) -> vector<std::common_type_t<T, U>>;
 } // namespace hex
 
 // ------------------------------ implementation below ------------------------------
@@ -160,5 +184,36 @@ template<hex::detail::arithmetic T, hex::detail::arithmetic U>
 constexpr auto hex::transform(vector<T> const& v, transformation<U> const& t) -> vector<std::common_type_t<T, U>>
 {
     return detail::apply_matrix(t.m_matrix, v);
+}
+
+template<hex::detail::arithmetic T>
+constexpr auto hex::transform(hex::vector<T> const& v, hex::reflection const& t) -> vector<T>
+{
+    return transform(v, transformation{t});
+}
+template<hex::detail::arithmetic T, std::floating_point U>
+constexpr auto hex::transform(hex::vector<T> const& v, hex::rotation<U> const& t) -> vector<std::common_type_t<T, U>>
+{
+    return transform(v, transformation{t});
+}
+template<hex::detail::arithmetic T>
+constexpr auto hex::transform(hex::vector<T> const& v, hex::rotation_steps const& t) -> vector<T>
+{
+    return transform(v, transformation{t});
+}
+template<hex::detail::arithmetic T, hex::detail::arithmetic U>
+constexpr auto hex::transform(hex::vector<T> const& v, hex::scaling<U> const& t) -> vector<std::common_type_t<T, U>>
+{
+    return transform(v, transformation{t});
+}
+template<hex::detail::arithmetic T, hex::detail::arithmetic U>
+constexpr auto hex::transform(hex::vector<T> const& v, hex::shearing<U> const& t) -> vector<std::common_type_t<T, U>>
+{
+    return transform(v, transformation{t});
+}
+template<hex::detail::arithmetic T, hex::detail::arithmetic U>
+constexpr auto hex::transform(hex::vector<T> const& v, hex::translation<U> const& t) -> vector<std::common_type_t<T, U>>
+{
+    return transform(v, transformation{t});
 }
 #endif // HEX_TRANSFORMATION_HPP
