@@ -77,7 +77,7 @@ class transformation
     detail::transformation_matrix<T> m_matrix;
 
     template<detail::arithmetic U, detail::arithmetic V>
-    friend constexpr auto apply(transformation<U> const& t, vector<V> const& v) -> vector<std::common_type_t<U, V>>;
+    friend constexpr auto transform(vector<U> const& v, transformation<V> const& t) -> vector<std::common_type_t<U, V>>;
 
     template<detail::arithmetic U>
     friend class transformation;
@@ -93,7 +93,7 @@ constexpr auto combine(transformation<T> const& t,
 
 // Applies a transformation to a vector, returning the transformed vector.
 template<detail::arithmetic T, detail::arithmetic U>
-constexpr auto apply(transformation<T> const& t, vector<U> const& v) -> vector<std::common_type_t<T, U>>;
+constexpr auto transform(vector<T> const& v, transformation<U> const& t) -> vector<std::common_type_t<T, U>>;
 } // namespace hex
 
 // ------------------------------ implementation below ------------------------------
@@ -157,7 +157,7 @@ constexpr auto hex::combine(transformation<T> const& t,
 }
 
 template<hex::detail::arithmetic T, hex::detail::arithmetic U>
-constexpr auto hex::apply(transformation<T> const& t, vector<U> const& v) -> vector<std::common_type_t<T, U>>
+constexpr auto hex::transform(vector<T> const& v, transformation<U> const& t) -> vector<std::common_type_t<T, U>>
 {
     return detail::apply_matrix(t.m_matrix, v);
 }

@@ -38,87 +38,87 @@ TEST_CASE("transformation")
 
     SECTION("identity")
     {
-        STATIC_CHECK(apply(transformation{}, vector{0_q, 0_r}) == vector{0_q, 0_r});
-        STATIC_CHECK(apply(transformation{}, vector{1_q, 2_r}) == vector{1_q, 2_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{}) == vector{1_q, 2_r});
     }
     SECTION("translation")
     {
-        STATIC_CHECK(apply(transformation{translation{vector{0_q, 0_r}}}, vector{0_q, 0_r}) == vector{0_q, 0_r});
-        STATIC_CHECK(apply(transformation{translation{vector{1_q, 2_r}}}, vector{0_q, 0_r}) == vector{1_q, 2_r});
-        STATIC_CHECK(apply(transformation{translation{vector{1_q, 2_r}}}, vector{-1_q, -2_r}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{translation{vector{0_q, 0_r}}}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{translation{vector{1_q, 2_r}}}) == vector{1_q, 2_r});
+        STATIC_CHECK(transform(vector{-1_q, -2_r}, transformation{translation{vector{1_q, 2_r}}}) == vector{0_q, 0_r});
     }
     SECTION("60° rotation")
     {
-        STATIC_CHECK(apply(transformation{rot_300_ccw}, vector{1_q, 2_r}) == vector{-2_q, 3_r});
-        STATIC_CHECK(apply(transformation{rot_240_ccw}, vector{1_q, 2_r}) == vector{-3_q, 1_r});
-        STATIC_CHECK(apply(transformation{rot_180_ccw}, vector{1_q, 2_r}) == vector{-1_q, -2_r});
-        STATIC_CHECK(apply(transformation{rot_120_ccw}, vector{1_q, 2_r}) == vector{2_q, -3_r});
-        STATIC_CHECK(apply(transformation{rot_60_ccw}, vector{1_q, 2_r}) == vector{3_q, -1_r});
-        STATIC_CHECK(apply(transformation{rot_0}, vector{1_q, 2_r}) == vector{1_q, 2_r});
-        STATIC_CHECK(apply(transformation{rot_60_cw}, vector{1_q, 2_r}) == vector{-2_q, 3_r});
-        STATIC_CHECK(apply(transformation{rot_120_cw}, vector{1_q, 2_r}) == vector{-3_q, 1_r});
-        STATIC_CHECK(apply(transformation{rot_180_cw}, vector{1_q, 2_r}) == vector{-1_q, -2_r});
-        STATIC_CHECK(apply(transformation{rot_240_cw}, vector{1_q, 2_r}) == vector{2_q, -3_r});
-        STATIC_CHECK(apply(transformation{rot_300_cw}, vector{1_q, 2_r}) == vector{3_q, -1_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_300_ccw}) == vector{-2_q, 3_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_240_ccw}) == vector{-3_q, 1_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_180_ccw}) == vector{-1_q, -2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_120_ccw}) == vector{2_q, -3_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_60_ccw}) == vector{3_q, -1_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_0}) == vector{1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_60_cw}) == vector{-2_q, 3_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_120_cw}) == vector{-3_q, 1_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_180_cw}) == vector{-1_q, -2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_240_cw}) == vector{2_q, -3_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{rot_300_cw}) == vector{3_q, -1_r});
 
-        STATIC_CHECK(apply(transformation{rot_300_cw}, vector{0_q, 0_r}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{rot_300_cw}) == vector{0_q, 0_r});
     }
     SECTION("rotation")
     {
         constexpr auto deg_60 = std::numbers::pi_v<double> / 3.;
-        STATIC_CHECK(apply(transformation{rotation{deg_60}}, vector{0_q, 0_r}) == vector{0._q, 0._r});
-        CHECK_THAT(apply(transformation{rotation{deg_60}}, vector{1_q, 2_r}).q().value(),
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{rotation{deg_60}}) == vector{0._q, 0._r});
+        CHECK_THAT(transform(vector{1_q, 2_r}, transformation{rotation{deg_60}}).q().value(),
                    Catch::Matchers::WithinRel(-2.));
-        CHECK_THAT(apply(transformation{rotation{deg_60}}, vector{1_q, 2_r}).r().value(),
+        CHECK_THAT(transform(vector{1_q, 2_r}, transformation{rotation{deg_60}}).r().value(),
                    Catch::Matchers::WithinRel(3.));
-        CHECK_THAT(apply(transformation{rotation{-deg_60}}, vector{1_q, 2_r}).q().value(),
+        CHECK_THAT(transform(vector{1_q, 2_r}, transformation{rotation{-deg_60}}).q().value(),
                    Catch::Matchers::WithinRel(3.));
-        CHECK_THAT(apply(transformation{rotation{-deg_60}}, vector{1_q, 2_r}).r().value(),
+        CHECK_THAT(transform(vector{1_q, 2_r}, transformation{rotation{-deg_60}}).r().value(),
                    Catch::Matchers::WithinRel(-1.));
     }
     SECTION("reflection")
     {
-        STATIC_CHECK(apply(transformation{reflection{coordinate_axis::q}}, vector{0_q, 0_r}) == vector{0_q, 0_r});
-        STATIC_CHECK(apply(transformation{reflection{coordinate_axis::r}}, vector{0_q, 0_r}) == vector{0_q, 0_r});
-        STATIC_CHECK(apply(transformation{reflection{coordinate_axis::s}}, vector{0_q, 0_r}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{reflection{coordinate_axis::q}}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{reflection{coordinate_axis::r}}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{reflection{coordinate_axis::s}}) == vector{0_q, 0_r});
 
-        STATIC_CHECK(apply(transformation{reflection{coordinate_axis::q}}, vector{1_q, 2_r}) == vector{-1_q, 3_r});
-        STATIC_CHECK(apply(transformation{reflection{coordinate_axis::r}}, vector{1_q, 2_r}) == vector{3_q, -2_r});
-        STATIC_CHECK(apply(transformation{reflection{coordinate_axis::s}}, vector{1_q, 2_r}) == vector{-2_q, -1_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{reflection{coordinate_axis::q}}) == vector{-1_q, 3_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{reflection{coordinate_axis::r}}) == vector{3_q, -2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{reflection{coordinate_axis::s}}) == vector{-2_q, -1_r});
     }
     SECTION("scaling")
     {
-        STATIC_CHECK(apply(transformation{scaling{0}}, vector{1_q, 2_r}) == vector{0_q, 0_r});
-        STATIC_CHECK(apply(transformation{scaling{1}}, vector{0_q, 0_r}) == vector{0_q, 0_r});
-        STATIC_CHECK(apply(transformation{scaling{1}}, vector{1_q, 2_r}) == vector{1_q, 2_r});
-        STATIC_CHECK(apply(transformation{scaling{2}}, vector{1_q, 2_r}) == vector{2_q, 4_r});
-        STATIC_CHECK(apply(transformation{scaling{-2}}, vector{1_q, 2_r}) == vector{-2_q, -4_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{scaling{0}}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{0_q, 0_r}, transformation{scaling{1}}) == vector{0_q, 0_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{scaling{1}}) == vector{1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{scaling{2}}) == vector{2_q, 4_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{scaling{-2}}) == vector{-2_q, -4_r});
 
-        STATIC_CHECK(apply(transformation{scaling{2._q}}, vector{1_q, 2_r}) == vector{1._q, 4.5_r});
-        STATIC_CHECK(apply(transformation{scaling{2._r}}, vector{1_q, 2_r}) == vector{3._q, 2._r});
-        STATIC_CHECK(apply(transformation{scaling{2._s}}, vector{1_q, 2_r}) == vector{0.5_q, 2.5_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{scaling{2._q}}) == vector{1._q, 4.5_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{scaling{2._r}}) == vector{3._q, 2._r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{scaling{2._s}}) == vector{0.5_q, 2.5_r});
     }
     SECTION("shearing")
     {
-        STATIC_CHECK(apply(transformation{shearing{0_q}}, vector{1_q, 2_r}) == vector{1_q, 2_r});
-        STATIC_CHECK(apply(transformation{shearing{0_r}}, vector{1_q, 2_r}) == vector{1_q, 2_r});
-        STATIC_CHECK(apply(transformation{shearing{0_s}}, vector{1_q, 2_r}) == vector{1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{0_q}}) == vector{1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{0_r}}) == vector{1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{0_s}}) == vector{1_q, 2_r});
 
-        STATIC_CHECK(apply(transformation{shearing{1_q}}, vector{1_q, 2_r}) == vector{1_q, 3_r});
-        STATIC_CHECK(apply(transformation{shearing{1_r}}, vector{1_q, 2_r}) == vector{-1_q, 2_r});
-        STATIC_CHECK(apply(transformation{shearing{1_s}}, vector{1_q, 2_r}) == vector{-2_q, 5_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{1_q}}) == vector{1_q, 3_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{1_r}}) == vector{-1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{1_s}}) == vector{-2_q, 5_r});
 
-        STATIC_CHECK(apply(transformation{shearing{-1_q}}, vector{1_q, 2_r}) == vector{1_q, 1_r});
-        STATIC_CHECK(apply(transformation{shearing{-1_r}}, vector{1_q, 2_r}) == vector{3_q, 2_r});
-        STATIC_CHECK(apply(transformation{shearing{-1_s}}, vector{1_q, 2_r}) == vector{4_q, -1_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{-1_q}}) == vector{1_q, 1_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{-1_r}}) == vector{3_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, transformation{shearing{-1_s}}) == vector{4_q, -1_r});
     }
     SECTION("combine")
     {
         constexpr transformation translate = translation{vector{1_q, -1_r}};
         constexpr transformation rot60     = rot_60_cw;
         constexpr transformation reflq     = reflection{coordinate_axis::q};
-        STATIC_CHECK(apply(combine(translate, rot60), vector{1_q, 2_r}) == vector{-1_q, 3_r});
-        STATIC_CHECK(apply(combine(rot60, translate), vector{1_q, 2_r}) == vector{-1_q, 2_r});
-        STATIC_CHECK(apply(combine(rot60, translate, reflq, rot60), vector{1_q, 2_r}) == vector{-1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, combine(translate, rot60)) == vector{-1_q, 3_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, combine(rot60, translate)) == vector{-1_q, 2_r});
+        STATIC_CHECK(transform(vector{1_q, 2_r}, combine(rot60, translate, reflq, rot60)) == vector{-1_q, 2_r});
     }
 }
