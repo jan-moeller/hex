@@ -32,8 +32,10 @@
 #include "hex/vector/detail/detail_vector_iterator.hpp"
 #include "hex/vector/rotation_steps.hpp"
 
+#include <array>
 #include <concepts>
 #include <iterator>
+#include <numbers>
 #include <type_traits>
 #include <utility>
 
@@ -208,6 +210,18 @@ template<detail::arithmetic T>
 // Reflects the vector across an axis.
 template<detail::arithmetic T>
 [[nodiscard]] constexpr auto reflect(vector<T> vec, coordinate_axis axis) -> vector<T>;
+
+// Returns the cartesian coordinates of the given hex vector, assuming the cartesian grid's origin coincides with the
+// hex grid origin, the x-axis coincides with the q-axis, and the y-axis is between the +r and -s axis. (0, 0, 0) is
+// mapped to (0, 0), (1, 0, -1) is mapped to (1.5, sqrt(3)/2), and (0, 1, -1) is mapped to (0, sqrt(3)).
+template<typename R = double, detail::arithmetic T>
+[[nodiscard]] constexpr auto to_cartesian(vector<T> vec) -> std::array<R, 2>;
+
+// Returns the hex grid vector of the given cartesian coordinates, assuming the cartesian grid's origin coincides with
+// the hex grid origin, the x-axis coincides with the q-axis, and the y-axis is between the +r and -s axis. (0, 0) is
+// mapped to (0, 0, 0), (1.5, sqrt(3)/2) is mapped to (1, 0, -1), and (0, sqrt(3)) is mapped to (0, 1, -1).
+template<typename R = double, detail::arithmetic T>
+[[nodiscard]] constexpr auto from_cartesian(std::array<T, 2> pos) -> vector<R>;
 
 // ------------------------------ implementation below ------------------------------
 
@@ -539,6 +553,21 @@ template<detail::arithmetic T>
         break;
     }
     return vec;
+}
+
+template<typename R, detail::arithmetic T>
+constexpr auto to_cartesian(vector<T> vec) -> std::array<R, 2>
+{
+    auto const x = 3. * (vec.q().value() / 2.);
+    auto const y = (std::numbers::sqrt3 / 2.) * (vec.q().value() + 2 * vec.r().value());
+    return {static_cast<R>(x), static_cast<R>(y)};
+}
+template<typename R, detail::arithmetic T>
+constexpr auto from_cartesian(std::array<T, 2> pos) -> vector<R>
+{
+    auto const q = (2. * pos[0]) / 3.;
+    auto const r = (std::numbers::sqrt3 * pos[1] - pos[0]) / 3.;
+    return vector<R>(q_coordinate<R>(q), r_coordinate<R>(r));
 }
 
 // The unit vector in +q -r direction. Has norm() == 1. Equal to -unit_rq.

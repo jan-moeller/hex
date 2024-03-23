@@ -25,6 +25,8 @@
 
 #include <catch2/catch_all.hpp>
 
+#include <array>
+#include <numbers>
 #include <ranges>
 
 using namespace hex;
@@ -283,5 +285,23 @@ TEST_CASE("vector")
 
         STATIC_CHECK(v.end() == vector<int>::iterator());
         STATIC_CHECK(v.begin() < v.end());
+    }
+
+    SECTION("cartesian <-> hexagonal")
+    {
+        using namespace Catch::Matchers;
+        constexpr auto sqrt3_half = std::numbers::sqrt3 / 2.;
+
+        STATIC_CHECK(to_cartesian(vector{}) == std::array{0., 0.});
+        CHECK_THAT(to_cartesian(vector{1_q, 0_r})[0], WithinRel(1.5));
+        CHECK_THAT(to_cartesian(vector{1_q, 0_r})[1], WithinRel(sqrt3_half));
+        CHECK_THAT(to_cartesian(vector{0_q, 1_r})[0], WithinAbs(0., 1e-16));
+        CHECK_THAT(to_cartesian(vector{0_q, 1_r})[1], WithinRel(std::numbers::sqrt3));
+
+        STATIC_CHECK(from_cartesian(std::array{0, 0}) == vector{0._q, 0._r});
+        CHECK_THAT(from_cartesian(std::array{1.5, sqrt3_half}).q().value(), WithinRel(1.));
+        CHECK_THAT(from_cartesian(std::array{1.5, sqrt3_half}).r().value(), WithinAbs(0., 1e-16));
+        CHECK_THAT(from_cartesian(std::array{0., std::numbers::sqrt3}).q().value(), WithinAbs(0., 1e-16));
+        CHECK_THAT(from_cartesian(std::array{0., std::numbers::sqrt3}).r().value(), WithinRel(1.));
     }
 }
