@@ -304,4 +304,14 @@ TEST_CASE("vector")
         CHECK_THAT(from_cartesian(std::array{0., std::numbers::sqrt3}).q().value(), WithinAbs(0., 1e-16));
         CHECK_THAT(from_cartesian(std::array{0., std::numbers::sqrt3}).r().value(), WithinRel(1.));
     }
+
+    SECTION("format")
+    {
+        STATIC_CHECK(std::formattable<vector<int>, char>);
+        STATIC_CHECK(std::formattable<vector<int>, wchar_t>);
+
+        CHECK(std::format("{}", vector{}) == "(0, 0, 0)");
+        CHECK(std::format("{:04b}", vector{1_q, 2_r}) == "(0001, 0010, -011)");
+        CHECK(std::format("{:g}", vector{1.23_q, 4.56_r}) == "(1.23, 4.56, -5.79)");
+    }
 }

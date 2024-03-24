@@ -34,6 +34,7 @@
 
 #include <array>
 #include <concepts>
+#include <format>
 #include <iterator>
 #include <numbers>
 #include <type_traits>
@@ -223,8 +224,24 @@ template<typename R = double, detail::arithmetic T>
 template<typename R = double, detail::arithmetic T>
 [[nodiscard]] constexpr auto from_cartesian(std::array<T, 2> pos) -> vector<R>;
 
+} // namespace hex
+
+template<typename T, typename CharT>
+struct std::formatter<hex::vector<T>, CharT>
+{
+    std::formatter<T, CharT> formatter;
+
+    template<class ParseContext>
+    constexpr auto parse(ParseContext& ctx) -> ParseContext::iterator;
+
+    template<class FmtContext>
+    constexpr auto format(hex::vector<T> vec, FmtContext& ctx) const -> FmtContext::iterator;
+};
+
 // ------------------------------ implementation below ------------------------------
 
+namespace hex
+{
 template<typename Lhs, typename Rhs>
 constexpr auto operator+(vector<Lhs> const& lhs, vector<Rhs> const& rhs) -> vector<decltype(Lhs{} + Rhs{})>
 {
@@ -590,5 +607,26 @@ inline constexpr vector<std::int8_t> diag_r{q_coordinate<std::int8_t>(-1), r_coo
 // The "diagonal" vector in +s direction. Has norm() == 2.
 inline constexpr vector<std::int8_t> diag_s{q_coordinate<std::int8_t>(-1), r_coordinate<std::int8_t>(-1)};
 } // namespace hex
+
+template<typename T, typename CharT>
+template<class ParseContext>
+constexpr auto std::formatter<hex::vector<T>, CharT>::parse(ParseContext& ctx) -> ParseContext::iterator
+{
+    return formatter.parse(ctx);
+}
+
+template<typename T, typename CharT>
+template<class FmtContext>
+constexpr auto std::formatter<hex::vector<T>, CharT>::format(hex::vector<T> vec,
+                                                             FmtContext&    ctx) const -> FmtContext::iterator
+{
+    std::format_to(ctx.out(), "(");
+    formatter.format(vec.q().value(), ctx);
+    std::format_to(ctx.out(), ", ");
+    formatter.format(vec.r().value(), ctx);
+    std::format_to(ctx.out(), ", ");
+    formatter.format(vec.s().value(), ctx);
+    return std::format_to(ctx.out(), ")");
+}
 
 #endif // HEX_VECTOR_HPP
