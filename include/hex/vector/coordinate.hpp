@@ -30,6 +30,7 @@
 #include "hex/detail/detail_parse_integer_literal.hpp"
 #include "hex/vector/coordinate_axis.hpp"
 
+#include <format>
 #include <limits>
 
 namespace hex
@@ -173,9 +174,24 @@ template<char... Digits>
 // Floating point literal of a s coordinate of underlying type long double.
 [[nodiscard]] constexpr auto operator""_sl(long double) noexcept -> s_coordinate<long double>;
 } // namespace literals
+} // namespace hex
+
+template<hex::coordinate_axis Axis, typename T, typename CharT>
+struct std::formatter<hex::coordinate<Axis, T>, CharT>
+{
+    std::formatter<T, CharT> formatter;
+
+    template<class ParseContext>
+    constexpr auto parse(ParseContext& ctx) -> ParseContext::iterator;
+
+    template<class FmtContext>
+    constexpr auto format(hex::coordinate<Axis, T> coord, FmtContext& ctx) const -> FmtContext::iterator;
+};
 
 // ------------------------------ implementation below ------------------------------
 
+namespace hex
+{
 template<coordinate_axis Axis, detail::arithmetic T>
 constexpr coordinate<Axis, T>::coordinate(T value) noexcept
     : m_value(value)
@@ -349,5 +365,20 @@ constexpr auto operator""_sl(long double n) noexcept -> s_coordinate<long double
 }
 } // namespace literals
 } // namespace hex
+
+template<hex::coordinate_axis Axis, typename T, typename CharT>
+template<class ParseContext>
+constexpr auto std::formatter<hex::coordinate<Axis, T>, CharT>::parse(ParseContext& ctx) -> ParseContext::iterator
+{
+    return formatter.parse(ctx);
+}
+
+template<hex::coordinate_axis Axis, typename T, typename CharT>
+template<class FmtContext>
+constexpr auto std::formatter<hex::coordinate<Axis, T>, CharT>::format(hex::coordinate<Axis, T> coord,
+                                                                       FmtContext& ctx) const -> FmtContext::iterator
+{
+    return formatter.format(coord.value(), ctx);
+}
 
 #endif // HEX_COORDINATE_HPP

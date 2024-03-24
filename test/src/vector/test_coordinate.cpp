@@ -23,8 +23,11 @@
 //
 
 #include "hex/vector/coordinate.hpp"
+#include "hex/vector/coordinate_axis.hpp"
 
 #include <catch2/catch_all.hpp>
+
+#include <format>
 
 using namespace hex;
 
@@ -168,5 +171,15 @@ TEST_CASE("coordinate")
         STATIC_CHECK(coordinate_cast<signed short>(1_q) == q_coordinate<signed short>(1));
         STATIC_CHECK(coordinate_cast<signed short>(1_r) == r_coordinate<signed short>(1));
         STATIC_CHECK(coordinate_cast<signed short>(1_s) == s_coordinate<signed short>(1));
+    }
+
+    SECTION("format")
+    {
+        STATIC_CHECK(std::formattable<coordinate<coordinate_axis::q, int>, char>);
+        STATIC_CHECK(std::formattable<coordinate<coordinate_axis::q, int>, wchar_t>);
+
+        CHECK(std::format("{}", -42_q) == "-42");
+        CHECK(std::format("{:012b}", 1234_r) == "010011010010");
+        CHECK(std::format("{:g}", 1.234_s) == "1.234");
     }
 }
