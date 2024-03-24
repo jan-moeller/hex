@@ -165,13 +165,13 @@ vector(r_coordinate<R>, s_coordinate<S>) -> vector<std::common_type_t<R, S>>;
 
 // Sums two coordinates.
 template<typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator+(vector<Lhs> const& lhs, vector<Rhs> const& rhs)
-    -> vector<decltype(Lhs{} + Rhs{})>;
+[[nodiscard]] constexpr auto operator+(vector<Lhs> const& lhs,
+                                       vector<Rhs> const& rhs) -> vector<decltype(Lhs{} + Rhs{})>;
 
 // Subtracts a vector from another.
 template<typename Lhs, typename Rhs>
-[[nodiscard]] constexpr auto operator-(vector<Lhs> const& lhs, vector<Rhs> const& rhs)
-    -> vector<decltype(Lhs{} - Rhs{})>;
+[[nodiscard]] constexpr auto operator-(vector<Lhs> const& lhs,
+                                       vector<Rhs> const& rhs) -> vector<decltype(Lhs{} - Rhs{})>;
 
 // Multiplies a vector by a factor.
 template<typename Lhs, typename Rhs>
