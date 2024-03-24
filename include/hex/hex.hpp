@@ -39,6 +39,7 @@
 #include "hex/vector/vector.hpp"
 #include "hex/views/convex_polygon/convex_polygon_parameters.hpp"
 #include "hex/views/convex_polygon/convex_polygon_view.hpp"
+#include "hex/views/line/line_view.hpp"
 #include "hex/views/neighbors/neighbors_view.hpp"
 #include "hex/views/offset_rows/offset_parity.hpp"
 #include "hex/views/offset_rows/offset_rows_view.hpp"
