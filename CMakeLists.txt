@@ -24,7 +24,7 @@
 
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 project(hex
-        VERSION 0.0.0
+        VERSION 0.1.0
         LANGUAGES CXX
 )
 
