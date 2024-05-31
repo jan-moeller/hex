@@ -98,6 +98,7 @@ class grid_iterator
     }
 
     friend Grid;
+    friend grid_iterator<Grid, !Const>;
 };
 } // namespace hex::detail
 
