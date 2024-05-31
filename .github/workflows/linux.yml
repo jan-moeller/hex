@@ -2,7 +2,7 @@ name: linux
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "messy/github_workflow" ]
   pull_request:
     branches: [ "main" ]
 
@@ -14,12 +14,12 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ ubuntu-22.04 ]
+        os: [ ubuntu-24.04 ]
         build_type: [ Debug, Release ]
         c_compiler: [ gcc-13 ]
         asan: [ OFF ]
         include:
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             c_compiler: gcc-13
             cpp_compiler: g++-13
         exclude: [ ]
@@ -29,9 +29,7 @@ jobs:
 
       - name: Install packages
         run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
-          sudo apt-get update
-          sudo apt-get install -y ninja-build g++-13
+          sudo apt-get install -y ninja-build
 
       - name: Set reusable strings
         id: strings
